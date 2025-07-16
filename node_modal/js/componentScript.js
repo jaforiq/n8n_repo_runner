@@ -40,8 +40,8 @@ const outputPanel = document.getElementById("outputPanel")
 const leftResizeHandle = document.getElementById("leftResizeHandle")
 const rightResizeHandle = document.getElementById("rightResizeHandle")
 
-// Track active impression dropdowns - IMPORTANT: This must be declared at the top
-const activeImpressionDropdowns = new Set()
+// Track active expression dropdowns - IMPORTANT: This must be declared at the top
+const activeExpressionDropdowns = new Set()
 
 // // Open modal
 // openModalBtn.addEventListener("click", () => {
@@ -247,40 +247,40 @@ function initializeDropdown(id) {
 //Toggle fucntionality
 function initializeToggle(id) {
   const fixedBtn = document.getElementById(`fixedBtn${id}`)
-  const impressionBtn = document.getElementById(`impressionBtn${id}`)
+  const expressionBtn = document.getElementById(`expressionBtn${id}`)
   const fixedSection = document.getElementById(`fixedSection${id}`)
-  const impressionSection = document.getElementById(`impressionSection${id}`)
+  const expressionSection = document.getElementById(`expressionSection${id}`)
   const tabIndicator = document.getElementById(`tabIndicator${id}`)
 
-  if (!fixedBtn || !impressionBtn) return
+  if (!fixedBtn || !expressionBtn) return
 
   fixedBtn.addEventListener("click", (e) => {
     e.stopPropagation() // Prevent global click handler
     if (tabIndicator) tabIndicator.style.left = "0"
     if (fixedSection) fixedSection.classList.remove("hidden")
-    if (impressionSection) impressionSection.classList.add("hidden")
+    if (expressionSection) expressionSection.classList.add("hidden")
     console.log("Fixed button clicked")
     fixedBtn.classList.add("text-white")
-    impressionBtn.classList.remove("text-white")
-    impressionBtn.classList.add("text-gray-400")
+    expressionBtn.classList.remove("text-white")
+    expressionBtn.classList.add("text-gray-400")
   })
 
-  impressionBtn.addEventListener("click", (e) => {
+  expressionBtn.addEventListener("click", (e) => {
     e.stopPropagation() // Prevent global click handler
     if (tabIndicator) tabIndicator.style.left = "50%"
     if (fixedSection) fixedSection.classList.add("hidden")
-    if (impressionSection) impressionSection.classList.remove("hidden")
-    console.log("Impression button clicked")
-    impressionBtn.classList.add("text-white")
+    if (expressionSection) expressionSection.classList.remove("hidden")
+    console.log("expression button clicked")
+    expressionBtn.classList.add("text-white")
     fixedBtn.classList.remove("text-white")
     fixedBtn.classList.add("text-gray-400")
   })
 }
 
-function initializeImpressionInput(id) {
-  const input = document.getElementById(`impressionInput${id}`)
-  const dropdown = document.getElementById(`impressionDropdown${id}`)
-  const result = document.getElementById(`impressionResult${id}`)
+function initializeExpressionInput(id) {
+  const input = document.getElementById(`expressionInput${id}`)
+  const dropdown = document.getElementById(`expressionDropdown${id}`)
+  const result = document.getElementById(`expressionResult${id}`)
 
   if (!input || !dropdown || !result) return
 
@@ -331,9 +331,9 @@ document.addEventListener("click", (e) => {
     }
   })
 
-  // 2. Close impression dropdowns
-  const input = document.getElementById("impressionInput2")
-  const dropdown = document.getElementById("impressionDropdown2")
+  // 2. Close expression dropdowns
+  const input = document.getElementById("expressionInput2")
+  const dropdown = document.getElementById("expressionDropdown2")
   if (input && dropdown && !input.contains(e.target) && !dropdown.contains(e.target)) {
     console.log("🎯 Click outside dropdown → hiding it.")
     dropdown.classList.add("hidden")
@@ -356,7 +356,7 @@ document.addEventListener("click", (e) => {
 initializeDropdown(1)
 initializeDropdown(2)
 initializeToggle(2)
-initializeImpressionInput(2)
+initializeExpressionInput(2)
 
 // Initialize Require Specific Output Format output format toggle
 function initializeOutputFormatToggle() {
@@ -505,8 +505,8 @@ function addOptionSection(optionType, id) {
             <button id="fixedBtn${id}" class="px-1 py-1 text-xs text-white hover:bg-gray-500 transition-colors tab-button flex-1">
               Fixed
             </button>
-            <button id="impressionBtn${id}" class="px-1 py-1 text-xs text-gray-400 hover:bg-gray-500 transition-colors tab-button flex-1">
-              Impression
+            <button id="expressionBtn${id}" class="px-1 py-1 text-xs text-gray-400 hover:bg-gray-500 transition-colors tab-button flex-1">
+              Expression
             </button>
           </div>
         </div>
@@ -524,7 +524,7 @@ function addOptionSection(optionType, id) {
     initializeToggle(id)
 
     if (optionType === "system-message") {
-      initializeImpressionInput(id)
+      initializeExpressionInput(id)
     }
     if (optionType === "return-intermediate-steps") {
       initializeToggleSwitch(`returnStepsToggle${id}`, `returnStepsContent${id}`)
@@ -558,14 +558,14 @@ function getOptionContent(optionType, id) {
             </div>
           </div>
         </div>
-        <div id="impressionSection${id}" class="relative hidden">
+        <div id="expressionSection${id}" class="relative hidden">
           <div class="bg-gray-700 border border-gray-600 rounded-lg overflow-hidden">
             <div class="flex">
               <div class="w-8 xs:w-12 bg-gray-600 border-r border-gray-500 flex items-center justify-center">
                 <span class="text-gray-300 text-xs xs:text-sm font-mono">fx</span>
               </div>
               <div class="flex-1 relative">
-                <input type="text" id="impressionInput${id}" class="w-full px-3 py-2 xs:px-4 xs:py-3 bg-transparent text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-inset pr-6 xs:pr-8 text-xs xs:text-sm" placeholder="Enter expression..." />
+                <input type="text" id="expressionInput${id}" class="w-full px-3 py-2 xs:px-4 xs:py-3 bg-transparent text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-inset pr-6 xs:pr-8 text-xs xs:text-sm" placeholder="Enter expression..." />
                 <button class="absolute right-1 top-1/2 transform -translate-y-1/2 xs:right-2 text-white hover:text-orange-500 transition-colors">
                   <svg class="w-3 h-3 xs:w-4 xs:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
@@ -582,7 +582,7 @@ function getOptionContent(optionType, id) {
         <div id="fixedSection${id}" class="relative">
           <input type="number" class="w-full bg-gray-700 text-white px-3 py-1 xs:px-4 xs:py-1 rounded-lg border border-gray-600 focus:outline-none focus:ring-2 focus:ring-orange-500 text-xs xs:text-sm" placeholder="Enter max iterations..." />
         </div>
-        <div id="impressionSection${id}" class="relative hidden">
+        <div id="expressionSection${id}" class="relative hidden">
           <div class="bg-gray-700 border border-gray-600 rounded-lg overflow-hidden">
             <div class="flex">
               <div class="w-8 xs:w-12 bg-gray-600 border-r border-gray-500 flex items-center justify-center">
@@ -627,7 +627,7 @@ function getOptionContent(optionType, id) {
             </div>
           </div>
         </div>
-        <div id="impressionSection${id}" class="relative hidden">
+        <div id="expressionSection${id}" class="relative hidden">
           <div class="bg-gray-700 border border-gray-600 rounded-lg overflow-hidden">
             <div class="flex">
               <div class="w-8 xs:w-12 bg-gray-600 border-r border-gray-500 flex items-center justify-center">
@@ -672,7 +672,7 @@ function getOptionContent(optionType, id) {
             </div>
           </div>
         </div>
-        <div id="impressionSection${id}" class="relative hidden">
+        <div id="expressionSection${id}" class="relative hidden">
           <div class="bg-gray-700 border border-gray-600 rounded-lg overflow-hidden">
             <div class="flex">
               <div class="w-8 xs:w-12 bg-gray-600 border-r border-gray-500 flex items-center justify-center">

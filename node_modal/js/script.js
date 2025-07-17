@@ -271,6 +271,7 @@ function initializeToggle(id) {
     if (fixedSection) fixedSection.classList.add("hidden")
     if (expressionSection) expressionSection.classList.remove("hidden")
     console.log("expression button clicked")
+  console.log("🟠 Expression button clicked for", id);
     expressionBtn.classList.add("text-white")
     fixedBtn.classList.remove("text-white")
     fixedBtn.classList.add("text-gray-400")
@@ -281,7 +282,19 @@ function initializeExpressionInput(id) {
   const input = document.getElementById(`expressionInput${id}`)
   const dropdown = document.getElementById(`expressionDropdown${id}`)
   const result = document.getElementById(`expressionResult${id}`)
+    const expressionBtn = document.getElementById(`expressionBtn${id}`);
+  const fixedBtn = document.getElementById(`fixedBtn${id}`);
 
+  console.log(`[initializeExpressionInput] id=${id}`, {
+    expressionBtn,
+    fixedBtn,
+    input
+  });
+
+  if (!expressionBtn || !fixedBtn || !input) {
+    console.warn(`❌ One or more elements missing for ID ${id}`);
+    return;
+  }
   if (!input || !dropdown || !result) return
 
   // Show dropdown with slight delay to avoid race with outside click
@@ -321,7 +334,7 @@ function initializeExpressionInput(id) {
 
 // Enhanced global click handler
 document.addEventListener("click", (e) => {
-  console.log("🌍 Global click: ", e.target)
+  //console.log("🌍 Global click: ", e.target)
 
   // 1. Close custom dropdowns
   document.querySelectorAll('[id^="customOptionsMenu"]').forEach((menu) => {
@@ -335,7 +348,7 @@ document.addEventListener("click", (e) => {
   const input = document.getElementById("expressionInput2")
   const dropdown = document.getElementById("expressionDropdown2")
   if (input && dropdown && !input.contains(e.target) && !dropdown.contains(e.target)) {
-    console.log("🎯 Click outside dropdown → hiding it.")
+    //console.log("🎯 Click outside dropdown → hiding it.")
     dropdown.classList.add("hidden")
   }
 
@@ -392,9 +405,11 @@ function initializeAddOption() {
     return
   }
 
+console.log(`Initializing Add Option...${optionCounter}`)
   // Add default System Message
   addOptionSection("system-message", optionCounter++)
   updateAddOptionVisibility()
+console.log(`Initializing Add Option...${optionCounter}`)
 
   // Toggle dropdown
   addOptionBtn.addEventListener("click", (e) => {
@@ -411,6 +426,8 @@ function initializeAddOption() {
         activeOptions.push(optionType)
         addOptionSection(optionType, optionCounter++)
         addOptionDropdown.classList.add("hidden")
+        console.log(`ActiveOption: ${activeOptions}`)
+        console.log(`Added option: ${optionType} with ID ${optionCounter - 1}`)
         updateDropdownOptions()
         updateAddOptionVisibility()
       }
@@ -449,6 +466,14 @@ function updateAddOptionVisibility() {
 
 function addOptionSection(optionType, id) {
   const container = document.getElementById("dynamicOptionsContainer")
+console.log(`Adding option section: ${optionType} with ID ${id}`)
+waitForElement(`#expressionBtn${id}`, 1000).then(() => {
+  initializeToggle(id);
+  initializeExpressionInput(id);
+  console.log(`✅ Expression section fully ready: ${id}`);
+}).catch(err => {
+  console.warn(err.message);
+});
 
   // Tooltip messages for each option type
   const tooltipMessages = {
@@ -520,27 +545,76 @@ function addOptionSection(optionType, id) {
 
   container.insertAdjacentHTML("beforeend", sectionHTML)
 
-  // Use requestAnimationFrame to ensure DOM is updated
-  requestAnimationFrame(() => {
-    // Initialize toggle for this section
-    initializeToggle(id)
+function waitForElement(selector, timeout = 2000) {
+  return new Promise((resolve, reject) => {
+    const intervalTime = 50;
+    let timePassed = 0;
 
-    if (optionType === "system-message") {
-      initializeExpressionInput(id)
-    }
-    if (optionType === "max-iterations") {
-      initializeExpressionInput(id)
-    }
-    if (optionType === "return-intermediate-steps") {
-      initializeToggleSwitch(`returnStepsToggle${id}`, `returnStepsContent${id}`)
-    }
-    if (optionType === "automatically-passthrough-binary-images") {
-      initializeToggleSwitch(`binaryImagesToggle${id}`, `binaryImagesContent${id}`)
-    }
-  })
+    const interval = setInterval(() => {
+      const element = document.querySelector(selector);
+      if (element) {
+        clearInterval(interval);
+        resolve(element);
+      } else if (timePassed > timeout) {
+        clearInterval(interval);
+        reject(new Error(`❌ Element ${selector} not found in ${timeout}ms`));
+      }
+      timePassed += intervalTime;
+    }, intervalTime);
+  });
+}
+
+
+   //initializeToggle(id); // Run this immediately
+
+// waitForElement(`#toggleExpression${id}`, 1000)
+//   .then(() => {
+//     if (optionType === "system-message" || optionType === "max-iterations") {
+//       initializeExpressionInput(id);
+//     }
+//     if (optionType === "return-intermediate-steps") {
+//       initializeToggleSwitch(`returnStepsToggle${id}`, `returnStepsContent${id}`);
+//     }
+//     if (optionType === "automatically-passthrough-binary-images") {
+//       initializeToggleSwitch(`binaryImagesToggle${id}`, `binaryImagesContent${id}`);
+//     }
+//     console.log(`✅ Successfully initialized: ${optionType} with ID ${id}`);
+//   })
+//   .catch((err) => {
+//     console.warn(`❌ ${err}`);
+//   });
+
+
+  requestAnimationFrame(() => {
+  // Initialize toggle immediately
+  initializeToggle(id)
+
+  // Wait for DOM paint, then ensure the element is attached
+  setTimeout(() => {
+    requestAnimationFrame(() => {
+      const expressionToggle = document.querySelector(`#expressionBtn${id}`)
+      if (expressionToggle) {
+        if (optionType === "system-message" || optionType === "max-iterations") {
+          initializeExpressionInput(id)
+        }
+        if (optionType === "return-intermediate-steps") {
+          initializeToggleSwitch(`returnStepsToggle${id}`, `returnStepsContent${id}`)
+        }
+        if (optionType === "automatically-passthrough-binary-images") {
+          initializeToggleSwitch(`binaryImagesToggle${id}`, `binaryImagesContent${id}`)
+        }
+        console.log(`✅ Initialized after DOM ready: ${optionType} with ID ${id}`)
+      } else {
+        console.warn(`⚠️ toggleExpression${id} not found at init time.`)
+      }
+    })
+  }, 0)
+})
+
 }
 
 function getOptionContent(optionType, id) {
+  console.log(`Generating content for option: ${optionType} with ID ${id}`)
   switch (optionType) {
     case "system-message":
       return `
@@ -729,42 +803,92 @@ function getOptionContent(optionType, id) {
     case "return-intermediate-steps":
       return `
         <div id="fixedSection${id}" class="relative">
-          <div class="space-y-2 xs:space-y-3">
             <!-- Toggle Switch on second line -->
             <div class="flex justify-start">
               <div class="relative">
                 <input type="checkbox" id="returnStepsToggle${id}" class="sr-only" />
                 <label for="returnStepsToggle${id}" class="flex items-center cursor-pointer">
                   <div class="relative">
-                    <div class="block bg-gray-600 w-6 h-3 xs:w-8 xs:h-4 rounded-full transition-colors duration-200"></div>
+                    <div class="block bg-gray-600 w-6 h-3 xs:w-9 xs:h-4 rounded-full transition-colors duration-200"></div>
                     <div class="dot absolute left-0 top-0 bg-white w-3 h-3 xs:w-4 xs:h-4 rounded-full transition-transform duration-300"></div>
                   </div>
                 </label>
               </div>
             </div>
-            <!-- Expanded Content when toggle is ON -->
-            <div id="returnStepsContent${id}" class="hidden space-y-3 xs:space-y-4">
-              <div class="bg-amber-600 bg-opacity-20 border border-amber-500 rounded-lg p-3 xs:p-4">
-                <p class="text-xs xs:text-sm text-amber-100">
-                  Connect an <span class="text-amber-400 font-medium">output parser</span> on the canvas to specify the output format you require
-                </p>
-              </div>
-            </div>
-          </div>
         </div>
-        <div id="expressionSection${id}" class="relative hidden">
-          <div class="bg-[#000814] border border-gray-600 rounded-lg overflow-hidden">
-            <div class="flex">
-              <div class="w-8 xs:w-12 bg-gray-600 border-r border-gray-500 flex items-center justify-center">
-                <span class="text-gray-300 text-xs xs:text-sm font-mono">fx</span>
+        <div id="expressionSection${id}" class="relative z-10 hidden">
+          <div class="relative">
+            <div
+              class="flex items-center bg-[#000814] border border-gray-600 rounded-md overflow-hidden border border-gray-500"
+            >
+              <div
+                class="px-2 py-1.5 xs:px-2 xs:py-1.5 bg-gray-600 border-r border-gray-500 italic text-gray-300 text-xs xs:text-sm"
+              >
+                fx
               </div>
-              <div class="flex-1 relative">
-                <input type="text" class="w-full px-3 py-2 xs:px-4 xs:py-3 bg-transparent text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-inset pr-6 xs:pr-8 text-xs xs:text-sm" placeholder="Enter expression..." />
-                <button class="absolute right-1 top-1/2 transform -translate-y-1/2 xs:right-2 text-gray-400 hover:text-orange-500 transition-colors">
-                  <svg class="w-3 h-3 xs:w-4 xs:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
-                  </svg>
-                </button>
+              <input
+                type="text"
+                id="expressionInput${id}"
+                class="flex-1 px-2 py-1 xs:px-2 xs:py-1 bg-transparent text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-inset text-sm xs:text-base"
+                placeholder="Enter expression..."
+              />
+              <button
+                class="px-2 py-1 xs:px-3 xs:py-1 text-gray-400 hover:text-orange-500 transition-colors"
+              >
+                <svg
+                  class="w-3 h-3 xs:w-4 xs:h-4"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
+                  ></path>
+                </svg>
+              </button>
+            </div>
+            <div
+              id="expressionDropdown${id}"
+              class="absolute top-full left-0 right-0 mt-1 bg-[#000814] border border-gray-600 rounded-md shadow-lg z-10"
+            >
+              <div class="p-3 xs:p-4">
+                <div
+                  class="flex items-center justify-between mb-2 xs:mb-3"
+                >
+                  <div
+                    class="text-white text-xs xs:text-sm font-medium"
+                  >
+                    Result
+                  </div>
+                  <div class="flex items-center gap-2">
+                    <span class="text-gray-400 text-xs xs:text-sm"
+                      >Item</span
+                    >
+                    <span
+                      class="bg-gray-600 text-white text-xs px-2 py-1 rounded"
+                      >0</span
+                    >
+                  </div>
+                </div>
+                <div class="mb-2 xs:mb-3">
+                  <div
+                    id="expressionResult2"
+                    class="text-gray-300 text-xs xs:text-sm"
+                  >
+                    [Execute previous nodes for preview]
+                  </div>
+                </div>
+                <div
+                  class="border-t border-gray-600 pt-2 xs:pt-3"
+                >
+                  <div class="text-gray-400 text-xs">
+                    <span class="font-medium">Tip:</span> Execute
+                    previous nodes to use input data
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -774,42 +898,92 @@ function getOptionContent(optionType, id) {
     case "automatically-passthrough-binary-images":
       return `
         <div id="fixedSection${id}" class="relative">
-          <div class="space-y-2 xs:space-y-3">
             <!-- Toggle Switch on second line -->
             <div class="flex justify-start">
               <div class="relative">
                 <input type="checkbox" id="binaryImagesToggle${id}" class="sr-only" />
                 <label for="binaryImagesToggle${id}" class="flex items-center cursor-pointer">
                   <div class="relative">
-                    <div class="block bg-gray-600 w-6 h-3 xs:w-8 xs:h-4 rounded-full transition-colors duration-200"></div>
+                    <div class="block bg-gray-600 w-6 h-3 xs:w-9 xs:h-4 rounded-full transition-colors duration-200"></div>
                     <div class="dot absolute left-0 top-0 bg-white w-3 h-3 xs:w-4 xs:h-4 rounded-full transition-transform duration-300"></div>
                   </div>
                 </label>
               </div>
             </div>
-            <!-- Expanded Content when toggle is ON -->
-            <div id="binaryImagesContent${id}" class="hidden space-y-3 xs:space-y-4">
-              <div class="bg-amber-600 bg-opacity-20 border border-amber-500 rounded-lg p-3 xs:p-4">
-                <p class="text-xs xs:text-sm text-amber-100">
-                  Connect an <span class="text-amber-400 font-medium">output parser</span> on the canvas to specify the output format you require
-                </p>
-              </div>
-            </div>
-          </div>
         </div>
-        <div id="expressionSection${id}" class="relative hidden">
-          <div class="bg-[#000814] border border-gray-600 rounded-lg overflow-hidden">
-            <div class="flex">
-              <div class="w-8 xs:w-12 bg-gray-600 border-r border-gray-500 flex items-center justify-center">
-                <span class="text-gray-300 text-xs xs:text-sm font-mono">fx</span>
+        <div id="expressionSection${id}" class="relative z-10 hidden">
+          <div class="relative">
+            <div
+              class="flex items-center bg-[#000814] border border-gray-600 rounded-md overflow-hidden border border-gray-500"
+            >
+              <div
+                class="px-2 py-1.5 xs:px-2 xs:py-1.5 bg-gray-600 border-r border-gray-500 italic text-gray-300 text-xs xs:text-sm"
+              >
+                fx
               </div>
-              <div class="flex-1 relative">
-                <input type="text" class="w-full px-3 py-2 xs:px-4 xs:py-3 bg-transparent text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-inset pr-6 xs:pr-8 text-xs xs:text-sm" placeholder="Enter expression..." />
-                <button class="absolute right-1 top-1/2 transform -translate-y-1/2 xs:right-2 text-gray-400 hover:text-orange-500 transition-colors">
-                  <svg class="w-3 h-3 xs:w-4 xs:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
-                  </svg>
-                </button>
+              <input
+                type="text"
+                id="expressionInput${id}"
+                class="flex-1 px-2 py-1 xs:px-2 xs:py-1 bg-transparent text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-inset text-sm xs:text-base"
+                placeholder="Enter expression..."
+              />
+              <button
+                class="px-2 py-1 xs:px-3 xs:py-1 text-gray-400 hover:text-orange-500 transition-colors"
+              >
+                <svg
+                  class="w-3 h-3 xs:w-4 xs:h-4"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
+                  ></path>
+                </svg>
+              </button>
+            </div>
+            <div
+              id="expressionDropdown${id}"
+              class="absolute top-full left-0 right-0 mt-1 bg-[#000814] border border-gray-600 rounded-md shadow-lg z-10"
+            >
+              <div class="p-3 xs:p-4">
+                <div
+                  class="flex items-center justify-between mb-2 xs:mb-3"
+                >
+                  <div
+                    class="text-white text-xs xs:text-sm font-medium"
+                  >
+                    Result
+                  </div>
+                  <div class="flex items-center gap-2">
+                    <span class="text-gray-400 text-xs xs:text-sm"
+                      >Item</span
+                    >
+                    <span
+                      class="bg-gray-600 text-white text-xs px-2 py-1 rounded"
+                      >0</span
+                    >
+                  </div>
+                </div>
+                <div class="mb-2 xs:mb-3">
+                  <div
+                    id="expressionResult2"
+                    class="text-gray-300 text-xs xs:text-sm"
+                  >
+                    [Execute previous nodes for preview]
+                  </div>
+                </div>
+                <div
+                  class="border-t border-gray-600 pt-2 xs:pt-3"
+                >
+                  <div class="text-gray-400 text-xs">
+                    <span class="font-medium">Tip:</span> Execute
+                    previous nodes to use input data
+                  </div>
+                </div>
               </div>
             </div>
           </div>

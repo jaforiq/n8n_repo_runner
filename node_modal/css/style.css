@@ -76,9 +76,11 @@
   /* Toggle Switch Styling for Return Intermediate Steps and Binary Images */
   input[type="checkbox"]:checked + label .dot {
     transform: translateX(100%);
+    translate: calc(100% - 0.6rem);
   }
   input[type="checkbox"]:checked + label div:first-child {
     background-color: #14b8a6;
+    border-radius: 999px;
   }
 
   /* Tooltip Styling - Updated to appear just above the help icon */

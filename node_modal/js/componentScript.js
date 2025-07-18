@@ -240,6 +240,10 @@ function initializeDropdown(id) {
         h3.classList.remove("text-white")
         h3.classList.add("text-orange-500")
       }
+
+      if (id === 2) {
+      handlePromptSourceChange(value);
+    }
     })
   })
 }
@@ -270,7 +274,7 @@ function initializeToggle(id) {
     if (tabIndicator) tabIndicator.style.left = "50%"
     if (fixedSection) fixedSection.classList.add("hidden")
     if (expressionSection) expressionSection.classList.remove("hidden")
-    console.log("expression button clicked")
+    //console.log("expression button clicked")
   console.log("🟠 Expression button clicked for", id);
     expressionBtn.classList.add("text-white")
     fixedBtn.classList.remove("text-white")
@@ -282,19 +286,19 @@ function initializeExpressionInput(id) {
   const input = document.getElementById(`expressionInput${id}`)
   const dropdown = document.getElementById(`expressionDropdown${id}`)
   const result = document.getElementById(`expressionResult${id}`)
-    const expressionBtn = document.getElementById(`expressionBtn${id}`);
-  const fixedBtn = document.getElementById(`fixedBtn${id}`);
+  //   const expressionBtn = document.getElementById(`expressionBtn${id}`);
+  // const fixedBtn = document.getElementById(`fixedBtn${id}`);
 
-  console.log(`[initializeExpressionInput] id=${id}`, {
-    expressionBtn,
-    fixedBtn,
-    input
-  });
+  // console.log(`[initializeExpressionInput] id=${id}`, {
+  //   expressionBtn,
+  //   fixedBtn,
+  //   input
+  // });
 
-  if (!expressionBtn || !fixedBtn || !input) {
-    console.warn(`❌ One or more elements missing for ID ${id}`);
-    return;
-  }
+  // if (!expressionBtn || !fixedBtn || !input) {
+  //   console.warn(`❌ One or more elements missing for ID ${id}`);
+  //   return;
+  // }
   if (!input || !dropdown || !result) return
 
   // Show dropdown with slight delay to avoid race with outside click
@@ -302,6 +306,131 @@ function initializeExpressionInput(id) {
     setTimeout(() => {
       dropdown.classList.remove("hidden")
     }, 50) // can be 0–50ms
+  }
+
+  const hideDropdown = () => {
+    dropdown.classList.add("hidden")
+  }
+
+  input.addEventListener("focus", (e) => {
+    e.stopPropagation()
+    showDropdown()
+  })
+
+  input.addEventListener("click", (e) => {
+    e.stopPropagation()
+    showDropdown()
+  })
+
+  input.addEventListener("blur", (e) => {
+    e.stopPropagation()
+    hideDropdown()
+  })
+
+  input.addEventListener("input", (e) => {
+    e.stopPropagation()
+    result.textContent = input.value || "[Execute previous nodes for preview]"
+    showDropdown()
+  })
+
+  dropdown.addEventListener("click", (e) => e.stopPropagation())
+}
+
+// Initialize Prompt Message functionality
+function initializePromptMessage() {
+  const sourceDropdown = document.getElementById("customOptionsMenu2")
+  const promptConnectedContent = document.getElementById("promptConnectedContent")
+  const promptDefineContent = document.getElementById("promptDefineContent")
+  const promptHoverControls = document.getElementById("promptHoverControls")
+  const promptFixedBtn = document.getElementById("promptFixedBtn")
+  const promptExpressionBtn = document.getElementById("promptExpressionBtn")
+  const promptFixedSection = document.getElementById("promptFixedSection")
+  const promptExpressionSection = document.getElementById("promptExpressionSection")
+  const promptTabIndicator = document.getElementById("promptTabIndicator")
+
+  if (!sourceDropdown || !promptConnectedContent || !promptDefineContent) {
+    console.error("Prompt message elements not found")
+    return
+  }
+
+  // Handle source dropdown selection changes
+  sourceDropdown.addEventListener("click", (e) => {
+    const option = e.target.closest(".custom-option")
+    if (option) {
+      const value = option.getAttribute("data-value")
+      handlePromptSourceChange(value)
+    }
+  })
+
+  // Initialize Fixed/Expression toggle for "Define below" mode
+  if (promptFixedBtn && promptExpressionBtn) {
+    promptFixedBtn.addEventListener("click", (e) => {
+      e.stopPropagation()
+      console.log("Prompt Fixed button clicked")
+      if (promptTabIndicator) promptTabIndicator.style.left = "0"
+      if (promptFixedSection) promptFixedSection.classList.remove("hidden")
+      if (promptExpressionSection) promptExpressionSection.classList.add("hidden")
+      promptFixedBtn.classList.add("text-white")
+      promptExpressionBtn.classList.remove("text-white")
+      promptExpressionBtn.classList.add("text-gray-400")
+    })
+
+    promptExpressionBtn.addEventListener("click", (e) => {
+      e.stopPropagation()
+      console.log("Prompt Expression button clicked")
+      if (promptTabIndicator) promptTabIndicator.style.left = "50%"
+      if (promptFixedSection) promptFixedSection.classList.add("hidden")
+      if (promptExpressionSection) promptExpressionSection.classList.remove("hidden")
+      promptExpressionBtn.classList.add("text-white")
+      promptFixedBtn.classList.remove("text-white")
+      promptFixedBtn.classList.add("text-gray-400")
+    })
+  }
+
+  // Initialize expression input for prompt
+  initializePromptExpressionInput()
+
+  // Set initial state based on current selection
+  const currentSelection = document.getElementById("selectedText2").textContent
+  handlePromptSourceChange(currentSelection)
+}
+
+function handlePromptSourceChange(selectedValue) {
+  const promptConnectedContent = document.getElementById("promptConnectedContent")
+  const promptDefineContent = document.getElementById("promptDefineContent")
+  const promptHoverControls = document.getElementById("promptHoverControls")
+
+  console.log(`Prompt source changed to: ${selectedValue}`)
+
+  if (selectedValue === "Connected Chat Trigger Node") {
+    // Show connected content, hide define content and hover controls
+    promptConnectedContent.classList.remove("hidden")
+    promptDefineContent.classList.add("hidden")
+    promptHoverControls.style.display = "none"
+  } else if (selectedValue === "Define below") {
+    // Show define content and hover controls, hide connected content
+    promptConnectedContent.classList.add("hidden")
+    promptDefineContent.classList.remove("hidden")
+    promptHoverControls.style.display = "flex"
+  }
+}
+
+function initializePromptExpressionInput() {
+  const input = document.getElementById("promptExpressionInput")
+  const dropdown = document.getElementById("promptExpressionDropdown")
+  const result = document.getElementById("promptExpressionResult")
+
+  if (!input || !dropdown || !result) {
+    console.error("Prompt expression input elements not found")
+    return
+  }
+
+  console.log("Initializing prompt expression input")
+
+  const showDropdown = () => {
+    setTimeout(() => {
+      dropdown.classList.remove("hidden")
+    }, 50)
   }
 
   const hideDropdown = () => {
@@ -370,6 +499,11 @@ initializeDropdown(1)
 initializeDropdown(2)
 initializeToggle(2)
 initializeExpressionInput(2)
+
+initializeExpressionInput(2)
+
+// Initialize Prompt Message functionality
+initializePromptMessage()
 
 // Initialize Require Specific Output Format output format toggle
 function initializeOutputFormatToggle() {
@@ -545,7 +679,7 @@ waitForElement(`#expressionBtn${id}`, 1000).then(() => {
 
   container.insertAdjacentHTML("beforeend", sectionHTML)
 
-function waitForElement(selector, timeout = 2000) {
+ function waitForElement(selector, timeout = 2000) {
   return new Promise((resolve, reject) => {
     const intervalTime = 50;
     let timePassed = 0;
@@ -562,7 +696,7 @@ function waitForElement(selector, timeout = 2000) {
       timePassed += intervalTime;
     }, intervalTime);
   });
-}
+ }
 
 
    //initializeToggle(id); // Run this immediately

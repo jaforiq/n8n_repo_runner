@@ -807,7 +807,7 @@ function getOptionContent(optionType, id) {
                 placeholder="Enter expression..."
               />
               <button
-                class="px-2 py-1 xs:px-3 xs:py-1 text-gray-600 hover:text-orange-500 transition-colors"
+                class="px-2 py-1 xs:px-3 xs:py-1 text-gray-400 hover:text-orange-500 transition-colors"
               >
                 <svg
                   class="w-3 h-3 xs:w-4 xs:h-4"
@@ -826,7 +826,7 @@ function getOptionContent(optionType, id) {
             </div>
             <div
               id="expressionDropdown${id}"
-              class="dropdown-arrow absolute top-full left-0 right-0 mt-1 bg-[#000814] border border-gray-600 rounded-md shadow-lg z-10"
+              class="absolute top-full left-0 right-0 mt-1 bg-[#000814] border border-gray-600 rounded-md shadow-lg z-10"
             >
               <div class="p-3 xs:p-4">
                 <div
@@ -910,7 +910,7 @@ function getOptionContent(optionType, id) {
             </div>
             <div
               id="expressionDropdown${id}"
-              class="dropdown-arrow absolute top-full left-0 right-0 mt-1 bg-[#000814] border border-gray-600 rounded-md shadow-lg z-10"
+              class="absolute top-full left-0 right-0 mt-1 bg-[#000814] border border-gray-600 rounded-md shadow-lg z-10"
             >
               <div class="p-3 xs:p-4">
                 <div
@@ -1005,7 +1005,7 @@ function getOptionContent(optionType, id) {
             </div>
             <div
               id="expressionDropdown${id}"
-              class="dropdown-arrow absolute top-full left-0 right-0 mt-1 bg-[#000814] border border-gray-600 rounded-md shadow-lg z-10"
+              class="absolute top-full left-0 right-0 mt-1 bg-[#000814] border border-gray-600 rounded-md shadow-lg z-10"
             >
               <div class="p-3 xs:p-4">
                 <div
@@ -1100,7 +1100,7 @@ function getOptionContent(optionType, id) {
             </div>
             <div
               id="expressionDropdown${id}"
-              class="dropdown-arrow absolute top-full left-0 right-0 mt-1 bg-[#000814] border border-gray-600 rounded-md shadow-lg z-10"
+              class="absolute top-full left-0 right-0 mt-1 bg-[#000814] border border-gray-600 rounded-md shadow-lg z-10"
             >
               <div class="p-3 xs:p-4">
                 <div

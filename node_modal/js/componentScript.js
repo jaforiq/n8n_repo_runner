@@ -187,10 +187,10 @@ function initializeDropdown(id) {
   const selectedText = document.getElementById(`selectedText${id}`)
   const selectArrow = document.getElementById(`selectArrow${id}`)
   const nativeSelect = document.getElementById(`agentSelect${id}`)
+  const dropdownArrow = document.getElementById(`dropdownArrow${id}`) // triangle
 
   if (!customSelectBtn || !customOptionsMenu || !selectedText || !nativeSelect) return
 
-  // Set initial highlight based on native <select> value
   const selectedValue = nativeSelect.value
   selectedText.textContent = selectedValue
 
@@ -208,11 +208,12 @@ function initializeDropdown(id) {
     }
   })
 
-  // Handle dropdown toggle
+  // Toggle Dropdown + Triangle
   customSelectBtn.addEventListener("click", (e) => {
     e.stopPropagation()
     const isOpen = !customOptionsMenu.classList.contains("hidden")
     customOptionsMenu.classList.toggle("hidden")
+    if (dropdownArrow) dropdownArrow.classList.toggle("hidden", isOpen)
     if (selectArrow) {
       selectArrow.style.transform = isOpen ? "rotate(0deg)" : "rotate(180deg)"
     }
@@ -226,9 +227,8 @@ function initializeDropdown(id) {
       selectedText.textContent = value
       nativeSelect.value = value
       customOptionsMenu.classList.add("hidden")
-      if (selectArrow) {
-        selectArrow.style.transform = "rotate(0deg)"
-      }
+      if (dropdownArrow) dropdownArrow.classList.add("hidden")
+      if (selectArrow) selectArrow.style.transform = "rotate(0deg)"
 
       // Highlight selected option
       customOptionsMenu.querySelectorAll("h3").forEach((h3) => {
@@ -242,11 +242,12 @@ function initializeDropdown(id) {
       }
 
       if (id === 2) {
-      handlePromptSourceChange(value);
-    }
+        handlePromptSourceChange(value)
+      }
     })
   })
 }
+
 
 //Toggle fucntionality
 function initializeToggle(id) {
@@ -467,10 +468,14 @@ document.addEventListener("click", (e) => {
 
   // 1. Close custom dropdowns
   document.querySelectorAll('[id^="customOptionsMenu"]').forEach((menu) => {
-    const button = document.querySelector(`[id^="customSelectBtn"][id$="${menu.id.replace("customOptionsMenu", "")}"]`)
-    if (button && !menu.contains(e.target) && !button.contains(e.target)) {
-      menu.classList.add("hidden")
-    }
+  const idSuffix = menu.id.replace("customOptionsMenu", "")
+  const button = document.querySelector(`[id^="customSelectBtn"][id$="${idSuffix}"]`)
+  const triangle = document.getElementById(`dropdownArrow${idSuffix}`) // <-- add this line
+
+  if (button && !menu.contains(e.target) && !button.contains(e.target)) {
+    menu.classList.add("hidden")
+    if (triangle) triangle.classList.add("hidden") // <-- hide triangle too
+  }
   })
 
   // 2. Close expression dropdowns
@@ -528,7 +533,8 @@ initializeOutputFormatToggle()
 let activeOptions = ["system-message"] // System Message is active by default
 let optionCounter = 1
 
-function initializeAddOption() {
+function initializeAddOption(id) {
+  const selectArrow = document.getElementById(`selectArrow${id}`)
   const addOptionBtn = document.getElementById("addOptionBtn")
   const addOptionDropdown = document.getElementById("addOptionDropdown")
   const addOptionContainer = document.getElementById("addOptionContainer")
@@ -548,8 +554,12 @@ console.log(`Initializing Add Option...${optionCounter}`)
   // Toggle dropdown
   addOptionBtn.addEventListener("click", (e) => {
     e.stopPropagation()
+    const isOpen = !addOptionDropdown.classList.contains("hidden")
     addOptionDropdown.classList.toggle("hidden")
     updateDropdownOptions()
+    if (selectArrow) {
+      selectArrow.style.transform = isOpen ? "rotate(0deg)" : "rotate(180deg)"
+    }
   })
 
   // Handle option selection
@@ -564,8 +574,21 @@ console.log(`Initializing Add Option...${optionCounter}`)
         console.log(`Added option: ${optionType} with ID ${optionCounter - 1}`)
         updateDropdownOptions()
         updateAddOptionVisibility()
+        if (selectArrow) {
+          selectArrow.style.transform = "rotate(0deg)"
+        }
       }
     })
+  })
+
+  // Close dropdown when clicking outside
+  document.addEventListener("click", (e) => {
+    if (!addOptionContainer.contains(e.target)) {
+      addOptionDropdown.classList.add("hidden")
+      if (selectArrow) {
+        selectArrow.style.transform = "rotate(0deg)"
+      }
+    }
   })
 }
 
@@ -784,7 +807,7 @@ function getOptionContent(optionType, id) {
                 placeholder="Enter expression..."
               />
               <button
-                class="px-2 py-1 xs:px-3 xs:py-1 text-gray-400 hover:text-orange-500 transition-colors"
+                class="px-2 py-1 xs:px-3 xs:py-1 text-gray-600 hover:text-orange-500 transition-colors"
               >
                 <svg
                   class="w-3 h-3 xs:w-4 xs:h-4"
@@ -803,7 +826,7 @@ function getOptionContent(optionType, id) {
             </div>
             <div
               id="expressionDropdown${id}"
-              class="absolute top-full left-0 right-0 mt-1 bg-[#000814] border border-gray-600 rounded-md shadow-lg z-10"
+              class="dropdown-arrow absolute top-full left-0 right-0 mt-1 bg-[#000814] border border-gray-600 rounded-md shadow-lg z-10"
             >
               <div class="p-3 xs:p-4">
                 <div
@@ -887,7 +910,7 @@ function getOptionContent(optionType, id) {
             </div>
             <div
               id="expressionDropdown${id}"
-              class="absolute top-full left-0 right-0 mt-1 bg-[#000814] border border-gray-600 rounded-md shadow-lg z-10"
+              class="dropdown-arrow absolute top-full left-0 right-0 mt-1 bg-[#000814] border border-gray-600 rounded-md shadow-lg z-10"
             >
               <div class="p-3 xs:p-4">
                 <div
@@ -982,7 +1005,7 @@ function getOptionContent(optionType, id) {
             </div>
             <div
               id="expressionDropdown${id}"
-              class="absolute top-full left-0 right-0 mt-1 bg-[#000814] border border-gray-600 rounded-md shadow-lg z-10"
+              class="dropdown-arrow absolute top-full left-0 right-0 mt-1 bg-[#000814] border border-gray-600 rounded-md shadow-lg z-10"
             >
               <div class="p-3 xs:p-4">
                 <div
@@ -1077,7 +1100,7 @@ function getOptionContent(optionType, id) {
             </div>
             <div
               id="expressionDropdown${id}"
-              class="absolute top-full left-0 right-0 mt-1 bg-[#000814] border border-gray-600 rounded-md shadow-lg z-10"
+              class="dropdown-arrow absolute top-full left-0 right-0 mt-1 bg-[#000814] border border-gray-600 rounded-md shadow-lg z-10"
             >
               <div class="p-3 xs:p-4">
                 <div
@@ -1148,4 +1171,4 @@ function removeOptionSection(optionType, id) {
 }
 
 // Initialize the Add Option functionality
-initializeAddOption()
+initializeAddOption(3)

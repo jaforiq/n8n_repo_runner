@@ -753,22 +753,18 @@ function getOptionContent(optionType, id) {
     case "system-message":
       return `
         <!-- Fixed Section Content (Default) -->
-        <div id="fixedSection${id}" class="relative">
-          <div class="bg-[#000814] border border-gray-600 rounded-lg overflow-hidden">
-            <div class="flex">
-              <div class="w-8 xs:w-12 bg-gray-600 border-r border-gray-500 flex items-center justify-center">
-                <span class="text-gray-300 text-xs xs:text-sm font-mono">fx</span>
-              </div>
-              <div class="flex-1 relative">
-                <textarea id="systemMessageTextarea${id}" class="w-full px-2 py-1 xs:px-2 xs:py-1 bg-transparent text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-inset resize-none min-h-[100px] xs:min-h-[120px] text-xs xs:text-sm font-mono pr-6 xs:pr-8" placeholder="### **Output Format:**">### **Output Format:**
+        <div id="fixedSection${id}" class="relative flex bg-[#000814] border border-gray-600 rounded-lg overflow-hidden">
+          <div class="w-6 xs:w-10 bg-gray-600 border-r border-gray-500 flex items-center justify-center">
+            <span class="text-gray-300 text-xs xs:text-sm font-mono">fx</span>
+          </div>
+          <div class="flex-1 relative">
+            <textarea id="systemMessageTextarea${id}" class="w-full px-2 py-1 xs:px-2 xs:py-1 bg-transparent text-white placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-blue-700 focus:ring-inset resize-none min-h-[100px] xs:min-h-[120px] text-xs xs:text-sm font-mono pr-6 xs:pr-8" placeholder="### **Output Format:**">### **Output Format:**
 - Provide the result **strictly in JSON format** with a single port representative.</textarea>
-                <button class="absolute bottom-1 right-1 xs:bottom-2 xs:right-2 text-gray-400 hover:text-orange-500 transition-colors bg-gray-700 rounded p-1">
-                  <svg class="w-3 h-3 xs:w-4 xs:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
-                  </svg>
-                </button>
-              </div>
-            </div>
+            <button class="absolute bottom-1 right-1 xs:bottom-2 xs:right-2 text-gray-400 hover:text-orange-500 transition-colors rounded p-1">
+              <svg class="w-3 h-3 xs:w-4 xs:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
+              </svg>
+            </button>
           </div>
         </div>
         <div id="expressionSection${id}" class="relative z-10 hidden">
@@ -784,7 +780,7 @@ function getOptionContent(optionType, id) {
               <input
                 type="text"
                 id="expressionInput${id}"
-                class="flex-1 px-2 py-1 xs:px-2 xs:py-1 bg-transparent text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-inset text-sm xs:text-base"
+                class="flex-1 px-2 py-1 xs:px-2 xs:py-1 bg-transparent text-white placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-blue-700 focus:ring-inset text-sm xs:text-base"
                 placeholder="Enter expression..."
               />
               <button
@@ -853,7 +849,7 @@ function getOptionContent(optionType, id) {
     case "max-iterations":
       return `
         <div id="fixedSection${id}" class="relative">
-          <input type="number" class="w-full bg-[#000814] text-white px-2 py-2 xs:px-2 xs:py-2 rounded-md border border-gray-600 focus:outline-none focus:ring-2 focus:ring-orange-500 text-xs xs:text-sm" placeholder="Enter max iterations..." />
+          <input type="number" class="w-full bg-[#000814] text-white px-2 py-2 xs:px-2 xs:py-2 rounded-md border border-gray-600 focus:outline-none focus:ring-1 focus:ring-blue-700 focus:ring-inset text-xs xs:text-sm" placeholder="Enter max iterations..." />
         </div>
         <div id="expressionSection${id}" class="relative z-10 hidden">
           <div class="relative">
@@ -868,7 +864,7 @@ function getOptionContent(optionType, id) {
               <input
                 type="text"
                 id="expressionInput${id}"
-                class="flex-1 px-2 py-1 xs:px-2 xs:py-1 bg-transparent text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-inset text-sm xs:text-base"
+                class="flex-1 px-2 py-1 xs:px-2 xs:py-1 bg-transparent text-white placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-blue-700 focus:ring-inset text-sm xs:text-base"
                 placeholder="Enter expression..."
               />
               <button
@@ -963,7 +959,7 @@ function getOptionContent(optionType, id) {
               <input
                 type="text"
                 id="expressionInput${id}"
-                class="flex-1 px-2 py-1 xs:px-2 xs:py-1 bg-transparent text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-inset text-sm xs:text-base"
+                class="flex-1 px-2 py-1 xs:px-2 xs:py-1 bg-transparent text-white placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-blue-700 focus:ring-inset text-sm xs:text-base"
                 placeholder="Enter expression..."
               />
               <button
@@ -1058,7 +1054,7 @@ function getOptionContent(optionType, id) {
               <input
                 type="text"
                 id="expressionInput${id}"
-                class="flex-1 px-2 py-1 xs:px-2 xs:py-1 bg-transparent text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-inset text-sm xs:text-base"
+                class="flex-1 px-2 py-1 xs:px-2 xs:py-1 bg-transparent text-white placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-blue-700 focus:ring-inset text-sm xs:text-base"
                 placeholder="Enter expression..."
               />
               <button

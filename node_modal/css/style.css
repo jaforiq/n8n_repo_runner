@@ -46,11 +46,18 @@
     position: absolute;
     top: 0;
     bottom: 0;
-    background: #374151;
-    border-radius: 0.375rem;
-    transition: all 0.3s ease;
+    background: #000814;
+    border-radius: .3rem;
+    margin: 2px;
+    transition: all 0.2s ease;
     z-index: 0;
   }
+
+  /* Hover text color only on inactive tab */
+  .tab-button.inactive:hover {
+    color: #f97316; /* Tailwind's orange-500 */
+  }
+
   .tab-button {
     position: relative;
     z-index: 1;
@@ -59,7 +66,7 @@
   /* Toggle Switch Styling */
   #outputFormatToggle:checked + label .dot {
     transform: translateX(100%);
-    translate: calc(100% - 0.6rem);
+    translate: calc(100% - 0.75rem);
   }
 
   #outputFormatToggle:checked + label div:first-child {
@@ -100,7 +107,7 @@
   /* Toggle Switch Styling for Return Intermediate Steps and Binary Images */
   input[type="checkbox"]:checked + label .dot {
     transform: translateX(100%);
-    translate: calc(100% - 0.6rem);
+    translate: calc(100% - 0.75rem);
   }
 
   input[type="checkbox"]:checked + label div:first-child {

@@ -266,9 +266,9 @@ function initializeToggle(id) {
     const parentRect = parent.getBoundingClientRect();
     const left = btnRect.left - parentRect.left;
     const width = btnRect.width;
-
+//console.log(`Moving indicator for ${btn.id} to left: ${left}, width: ${width}`);
     tabIndicator.style.left = `${left}px`;
-    tabIndicator.style.width = `${width}px`;
+    tabIndicator.style.width = `${width-4}px`;
   };
 
   const activateTab = (activeBtn, inactiveBtn, showSection, hideSection) => {
@@ -286,13 +286,13 @@ function initializeToggle(id) {
   fixedBtn.addEventListener("click", (e) => {
     e.stopPropagation();
     activateTab(fixedBtn, expressionBtn, fixedSection, expressionSection);
-    console.log("✅ Fixed button clicked");
+    //console.log("✅ Fixed button clicked");
   });
 
   expressionBtn.addEventListener("click", (e) => {
     e.stopPropagation();
     activateTab(expressionBtn, fixedBtn, expressionSection, fixedSection);
-    console.log("🟠 Expression button clicked for", id);
+    //console.log("🟠 Expression button clicked for", id);
   });
 
   // Initial indicator placement
@@ -368,7 +368,7 @@ function initializePromptMessage() {
   const promptTabIndicator = document.getElementById("promptTabIndicator")
 
   if (!sourceDropdown || !promptConnectedContent || !promptDefineContent) {
-    console.error("Prompt message elements not found")
+    //console.error("Prompt message elements not found")
     return
   }
 
@@ -386,14 +386,14 @@ function initializePromptMessage() {
     if (!promptTabIndicator || !targetBtn) return
     const { offsetLeft, offsetWidth } = targetBtn
     promptTabIndicator.style.left = `${offsetLeft}px`
-    promptTabIndicator.style.width = `${offsetWidth}px`
+    promptTabIndicator.style.width = `${offsetWidth-4}px`
   }
 
   // Fixed tab click
   if (promptFixedBtn && promptExpressionBtn) {
     promptFixedBtn.addEventListener("click", (e) => {
     e.stopPropagation()
-    console.log("Prompt Fixed button clicked")
+    //console.log("Prompt Fixed button clicked")
     moveIndicator(promptFixedBtn)
     promptFixedSection?.classList.remove("hidden")
     promptExpressionSection?.classList.add("hidden")
@@ -410,7 +410,7 @@ function initializePromptMessage() {
     // Expression tab click
     promptExpressionBtn.addEventListener("click", (e) => {
       e.stopPropagation()
-      console.log("Prompt Expression button clicked")
+      //console.log("Prompt Expression button clicked")
       moveIndicator(promptExpressionBtn)
       promptFixedSection?.classList.add("hidden")
       promptExpressionSection?.classList.remove("hidden")
@@ -1247,3 +1247,28 @@ function initializeRetrySettingsToggle() {
 
 // Call this after DOM is ready
 initializeRetrySettingsToggle();
+
+  const toggle = document.getElementById("dropdownToggle");
+  const menu = document.getElementById("dropdownMenu");
+  const label = document.getElementById("dropdownLabel");
+
+  toggle.addEventListener("click", (e) => {
+    e.stopPropagation();
+    menu.classList.toggle("hidden");
+  });
+
+  document.querySelectorAll(".type-option").forEach((item) => {
+    item.addEventListener("click", (e) => {
+      document
+        .querySelectorAll(".type-option")
+        .forEach((el) => el.classList.remove("text-orange-500"));
+      const val = item.getAttribute("data-type");
+      label.textContent = val;
+      item.classList.add("text-orange-500");
+      menu.classList.add("hidden");
+    });
+  });
+
+  window.addEventListener("click", () => menu.classList.add("hidden"));
+
+

@@ -1172,3 +1172,20 @@ function removeOptionSection(optionType, id) {
 
 // Initialize the Add Option functionality
 initializeAddOption(3)
+
+function initializeRetrySettingsToggle() {
+  const toggle = document.getElementById("retrySettingsToggle");
+  const content = document.getElementById("retrySettingsContent");
+  if (!toggle || !content) return;
+
+  toggle.addEventListener("change", () => {
+    if (toggle.checked) {
+      content.classList.remove("hidden");
+    } else {
+      content.classList.add("hidden");
+    }
+  });
+}
+
+// Call this after DOM is ready
+initializeRetrySettingsToggle();

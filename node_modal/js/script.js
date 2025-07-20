@@ -55,7 +55,7 @@ function closeModal() {
   document.body.style.overflow = "auto"
 }
 
-backToCanvas.addEventListener("click", closeModal)
+//backToCanvas.addEventListener("click", closeModal)
 
 // Close modal when clicking overlay
 modalOverlay.addEventListener("click", (e) => {
@@ -187,10 +187,10 @@ function initializeDropdown(id) {
   const selectedText = document.getElementById(`selectedText${id}`)
   const selectArrow = document.getElementById(`selectArrow${id}`)
   const nativeSelect = document.getElementById(`agentSelect${id}`)
+  const dropdownArrow = document.getElementById(`dropdownArrow${id}`) // triangle
 
   if (!customSelectBtn || !customOptionsMenu || !selectedText || !nativeSelect) return
 
-  // Set initial highlight based on native <select> value
   const selectedValue = nativeSelect.value
   selectedText.textContent = selectedValue
 
@@ -208,11 +208,12 @@ function initializeDropdown(id) {
     }
   })
 
-  // Handle dropdown toggle
+  // Toggle Dropdown + Triangle
   customSelectBtn.addEventListener("click", (e) => {
     e.stopPropagation()
     const isOpen = !customOptionsMenu.classList.contains("hidden")
     customOptionsMenu.classList.toggle("hidden")
+    if (dropdownArrow) dropdownArrow.classList.toggle("hidden", isOpen)
     if (selectArrow) {
       selectArrow.style.transform = isOpen ? "rotate(0deg)" : "rotate(180deg)"
     }
@@ -226,9 +227,8 @@ function initializeDropdown(id) {
       selectedText.textContent = value
       nativeSelect.value = value
       customOptionsMenu.classList.add("hidden")
-      if (selectArrow) {
-        selectArrow.style.transform = "rotate(0deg)"
-      }
+      if (dropdownArrow) dropdownArrow.classList.add("hidden")
+      if (selectArrow) selectArrow.style.transform = "rotate(0deg)"
 
       // Highlight selected option
       customOptionsMenu.querySelectorAll("h3").forEach((h3) => {
@@ -242,11 +242,12 @@ function initializeDropdown(id) {
       }
 
       if (id === 2) {
-      handlePromptSourceChange(value);
-    }
+        handlePromptSourceChange(value)
+      }
     })
   })
 }
+
 
 //Toggle fucntionality
 function initializeToggle(id) {
@@ -467,10 +468,14 @@ document.addEventListener("click", (e) => {
 
   // 1. Close custom dropdowns
   document.querySelectorAll('[id^="customOptionsMenu"]').forEach((menu) => {
-    const button = document.querySelector(`[id^="customSelectBtn"][id$="${menu.id.replace("customOptionsMenu", "")}"]`)
-    if (button && !menu.contains(e.target) && !button.contains(e.target)) {
-      menu.classList.add("hidden")
-    }
+  const idSuffix = menu.id.replace("customOptionsMenu", "")
+  const button = document.querySelector(`[id^="customSelectBtn"][id$="${idSuffix}"]`)
+  const triangle = document.getElementById(`dropdownArrow${idSuffix}`) // <-- add this line
+
+  if (button && !menu.contains(e.target) && !button.contains(e.target)) {
+    menu.classList.add("hidden")
+    if (triangle) triangle.classList.add("hidden") // <-- hide triangle too
+  }
   })
 
   // 2. Close expression dropdowns
@@ -528,7 +533,8 @@ initializeOutputFormatToggle()
 let activeOptions = ["system-message"] // System Message is active by default
 let optionCounter = 1
 
-function initializeAddOption() {
+function initializeAddOption(id) {
+  const selectArrow = document.getElementById(`selectArrow${id}`)
   const addOptionBtn = document.getElementById("addOptionBtn")
   const addOptionDropdown = document.getElementById("addOptionDropdown")
   const addOptionContainer = document.getElementById("addOptionContainer")
@@ -548,8 +554,12 @@ console.log(`Initializing Add Option...${optionCounter}`)
   // Toggle dropdown
   addOptionBtn.addEventListener("click", (e) => {
     e.stopPropagation()
+    const isOpen = !addOptionDropdown.classList.contains("hidden")
     addOptionDropdown.classList.toggle("hidden")
     updateDropdownOptions()
+    if (selectArrow) {
+      selectArrow.style.transform = isOpen ? "rotate(0deg)" : "rotate(180deg)"
+    }
   })
 
   // Handle option selection
@@ -564,8 +574,21 @@ console.log(`Initializing Add Option...${optionCounter}`)
         console.log(`Added option: ${optionType} with ID ${optionCounter - 1}`)
         updateDropdownOptions()
         updateAddOptionVisibility()
+        if (selectArrow) {
+          selectArrow.style.transform = "rotate(0deg)"
+        }
       }
     })
+  })
+
+  // Close dropdown when clicking outside
+  document.addEventListener("click", (e) => {
+    if (!addOptionContainer.contains(e.target)) {
+      addOptionDropdown.classList.add("hidden")
+      if (selectArrow) {
+        selectArrow.style.transform = "rotate(0deg)"
+      }
+    }
   })
 }
 
@@ -753,12 +776,12 @@ function getOptionContent(optionType, id) {
     case "system-message":
       return `
         <!-- Fixed Section Content (Default) -->
-        <div id="fixedSection${id}" class="relative flex bg-[#000814] border border-gray-600 rounded-lg overflow-hidden">
-          <div class="w-6 xs:w-10 bg-gray-600 border-r border-gray-500 flex items-center justify-center">
+        <div id="fixedSection${id}" class="relative flex bg-[#000814] border border-gray-600 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-700 focus:ring-inset">
+          <div class="w-6 xs:w-10 bg-gray-600 border-r border-gray-500 flex items-center justify-center rounded-l-md">
             <span class="text-gray-300 text-xs xs:text-sm font-mono">fx</span>
           </div>
           <div class="flex-1 relative">
-            <textarea id="systemMessageTextarea${id}" class="w-full px-2 py-1 xs:px-2 xs:py-1 bg-transparent text-white placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-blue-700 focus:ring-inset resize-none min-h-[100px] xs:min-h-[120px] text-xs xs:text-sm font-mono pr-6 xs:pr-8" placeholder="### **Output Format:**">### **Output Format:**
+            <textarea id="systemMessageTextarea${id}" class="w-full h-full px-2 py-1 xs:px-2 xs:py-1 bg-transparent text-white placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-blue-700 rounded-r-md focus:ring-inset resize-none min-h-[100px] xs:min-h-[120px] text-xs xs:text-sm font-mono pr-6 xs:pr-8" placeholder="### **Output Format:**">### **Output Format:**
 - Provide the result **strictly in JSON format** with a single port representative.</textarea>
             <button class="absolute bottom-1 right-1 xs:bottom-2 xs:right-2 text-gray-400 hover:text-orange-500 transition-colors rounded p-1">
               <svg class="w-3 h-3 xs:w-4 xs:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -1148,8 +1171,7 @@ function removeOptionSection(optionType, id) {
 }
 
 // Initialize the Add Option functionality
-initializeAddOption()
-
+initializeAddOption(3)
 
 function initializeRetrySettingsToggle() {
   const toggle = document.getElementById("retrySettingsToggle");

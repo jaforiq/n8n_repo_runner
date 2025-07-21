@@ -305,19 +305,7 @@ function initializeExpressionInput(id) {
   const input = document.getElementById(`expressionInput${id}`)
   const dropdown = document.getElementById(`expressionDropdown${id}`)
   const result = document.getElementById(`expressionResult${id}`)
-  //   const expressionBtn = document.getElementById(`expressionBtn${id}`);
-  // const fixedBtn = document.getElementById(`fixedBtn${id}`);
 
-  // console.log(`[initializeExpressionInput] id=${id}`, {
-  //   expressionBtn,
-  //   fixedBtn,
-  //   input
-  // });
-
-  // if (!expressionBtn || !fixedBtn || !input) {
-  //   console.warn(`❌ One or more elements missing for ID ${id}`);
-  //   return;
-  // }
   if (!input || !dropdown || !result) return
 
   // Show dropdown with slight delay to avoid race with outside click

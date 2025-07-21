@@ -251,55 +251,61 @@ function initializeDropdown(id) {
 
 //Toggle fucntionality
 function initializeToggle(id) {
-  const fixedBtn = document.getElementById(`fixedBtn${id}`)
-  const expressionBtn = document.getElementById(`expressionBtn${id}`)
-  const fixedSection = document.getElementById(`fixedSection${id}`)
-  const expressionSection = document.getElementById(`expressionSection${id}`)
-  const tabIndicator = document.getElementById(`tabIndicator${id}`)
+  const fixedBtn = document.getElementById(`fixedBtn${id}`);
+  const expressionBtn = document.getElementById(`expressionBtn${id}`);
+  const fixedSection = document.getElementById(`fixedSection${id}`);
+  const expressionSection = document.getElementById(`expressionSection${id}`);
+  const tabIndicator = document.getElementById(`tabIndicator${id}`);
 
-  if (!fixedBtn || !expressionBtn) return
+  if (!fixedBtn || !expressionBtn || !tabIndicator) return;
+
+  const moveIndicator = (btn) => {
+    const parent = btn.parentElement;
+    if (!parent) return;
+    const btnRect = btn.getBoundingClientRect();
+    const parentRect = parent.getBoundingClientRect();
+    const left = btnRect.left - parentRect.left;
+    const width = btnRect.width;
+//console.log(`Moving indicator for ${btn.id} to left: ${left}, width: ${width}`);
+    tabIndicator.style.left = `${left}px`;
+    tabIndicator.style.width = `${width-4}px`;
+  };
+
+  const activateTab = (activeBtn, inactiveBtn, showSection, hideSection) => {
+    moveIndicator(activeBtn);
+
+    activeBtn.classList.add("text-white");
+    activeBtn.classList.remove("text-gray-400", "inactive");
+    inactiveBtn.classList.add("text-gray-400", "inactive");
+    inactiveBtn.classList.remove("text-white");
+
+    if (showSection) showSection.classList.remove("hidden");
+    if (hideSection) hideSection.classList.add("hidden");
+  };
 
   fixedBtn.addEventListener("click", (e) => {
-    e.stopPropagation() // Prevent global click handler
-    if (tabIndicator) tabIndicator.style.left = "0"
-    if (fixedSection) fixedSection.classList.remove("hidden")
-    if (expressionSection) expressionSection.classList.add("hidden")
-    console.log("Fixed button clicked")
-    fixedBtn.classList.add("text-white")
-    expressionBtn.classList.remove("text-white")
-    expressionBtn.classList.add("text-gray-400")
-  })
+    e.stopPropagation();
+    activateTab(fixedBtn, expressionBtn, fixedSection, expressionSection);
+    //console.log("✅ Fixed button clicked");
+  });
 
   expressionBtn.addEventListener("click", (e) => {
-    e.stopPropagation() // Prevent global click handler
-    if (tabIndicator) tabIndicator.style.left = "50%"
-    if (fixedSection) fixedSection.classList.add("hidden")
-    if (expressionSection) expressionSection.classList.remove("hidden")
-    //console.log("expression button clicked")
-  console.log("🟠 Expression button clicked for", id);
-    expressionBtn.classList.add("text-white")
-    fixedBtn.classList.remove("text-white")
-    fixedBtn.classList.add("text-gray-400")
-  })
+    e.stopPropagation();
+    activateTab(expressionBtn, fixedBtn, expressionSection, fixedSection);
+    //console.log("🟠 Expression button clicked for", id);
+  });
+
+  // Initial indicator placement
+  moveIndicator(fixedBtn);
+  expressionBtn.classList.add("inactive");
 }
+
 
 function initializeExpressionInput(id) {
   const input = document.getElementById(`expressionInput${id}`)
   const dropdown = document.getElementById(`expressionDropdown${id}`)
   const result = document.getElementById(`expressionResult${id}`)
-  //   const expressionBtn = document.getElementById(`expressionBtn${id}`);
-  // const fixedBtn = document.getElementById(`fixedBtn${id}`);
 
-  // console.log(`[initializeExpressionInput] id=${id}`, {
-  //   expressionBtn,
-  //   fixedBtn,
-  //   input
-  // });
-
-  // if (!expressionBtn || !fixedBtn || !input) {
-  //   console.warn(`❌ One or more elements missing for ID ${id}`);
-  //   return;
-  // }
   if (!input || !dropdown || !result) return
 
   // Show dropdown with slight delay to avoid race with outside click
@@ -350,7 +356,7 @@ function initializePromptMessage() {
   const promptTabIndicator = document.getElementById("promptTabIndicator")
 
   if (!sourceDropdown || !promptConnectedContent || !promptDefineContent) {
-    console.error("Prompt message elements not found")
+    //console.error("Prompt message elements not found")
     return
   }
 
@@ -363,38 +369,78 @@ function initializePromptMessage() {
     }
   })
 
-  // Initialize Fixed/Expression toggle for "Define below" mode
+  // Move the indicator to match button position and width
+  const moveIndicator = (targetBtn) => {
+    if (!promptTabIndicator || !targetBtn) return
+    const { offsetLeft, offsetWidth } = targetBtn
+    promptTabIndicator.style.left = `${offsetLeft}px`
+    promptTabIndicator.style.width = `${offsetWidth-4}px`
+  }
+
+  // Fixed tab click
   if (promptFixedBtn && promptExpressionBtn) {
     promptFixedBtn.addEventListener("click", (e) => {
-      e.stopPropagation()
-      console.log("Prompt Fixed button clicked")
-      if (promptTabIndicator) promptTabIndicator.style.left = "0"
-      if (promptFixedSection) promptFixedSection.classList.remove("hidden")
-      if (promptExpressionSection) promptExpressionSection.classList.add("hidden")
-      promptFixedBtn.classList.add("text-white")
-      promptExpressionBtn.classList.remove("text-white")
-      promptExpressionBtn.classList.add("text-gray-400")
-    })
+    e.stopPropagation()
+    //console.log("Prompt Fixed button clicked")
+    moveIndicator(promptFixedBtn)
+    promptFixedSection?.classList.remove("hidden")
+    promptExpressionSection?.classList.add("hidden")
 
+    // Update classes
+    promptFixedBtn.classList.add("text-white")
+    promptFixedBtn.classList.remove("text-orange-500")
+
+    promptExpressionBtn.classList.remove("text-orange-500", "text-white")
+    promptExpressionBtn.classList.add("text-gray-400")
+  })
+
+
+    // Expression tab click
     promptExpressionBtn.addEventListener("click", (e) => {
       e.stopPropagation()
-      console.log("Prompt Expression button clicked")
-      if (promptTabIndicator) promptTabIndicator.style.left = "50%"
-      if (promptFixedSection) promptFixedSection.classList.add("hidden")
-      if (promptExpressionSection) promptExpressionSection.classList.remove("hidden")
+      //console.log("Prompt Expression button clicked")
+      moveIndicator(promptExpressionBtn)
+      promptFixedSection?.classList.add("hidden")
+      promptExpressionSection?.classList.remove("hidden")
       promptExpressionBtn.classList.add("text-white")
       promptFixedBtn.classList.remove("text-white")
       promptFixedBtn.classList.add("text-gray-400")
     })
+
+    // 🟠 Hover effect
+    const handleHover = (btn) => {
+    btn.addEventListener("mouseenter", () => {
+      if (!btn.classList.contains("text-white")) {
+        btn.classList.remove("text-gray-400")
+        btn.classList.add("text-orange-500")
+      }
+    })
+
+    btn.addEventListener("mouseleave", () => {
+      if (!btn.classList.contains("text-white")) {
+        btn.classList.remove("text-orange-500")
+        btn.classList.add("text-gray-400")
+      }
+    })
+  }
+
+
+    handleHover(promptFixedBtn)
+    handleHover(promptExpressionBtn)
+
+
+    // Set default indicator to fixed on load
+    moveIndicator(promptFixedBtn)
   }
 
   // Initialize expression input for prompt
   initializePromptExpressionInput()
 
-  // Set initial state based on current selection
-  const currentSelection = document.getElementById("selectedText2").textContent
-  handlePromptSourceChange(currentSelection)
+  // Set initial state based on current dropdown selection
+  const currentSelection = document.getElementById("selectedText2")?.textContent
+  if (currentSelection) handlePromptSourceChange(currentSelection)
 }
+
 
 function handlePromptSourceChange(selectedValue) {
   const promptConnectedContent = document.getElementById("promptConnectedContent")
@@ -686,10 +732,10 @@ waitForElement(`#expressionBtn${id}`, 1000).then(() => {
           </button>
           <div class="flex items-center bg-gray-600 rounded overflow-hidden relative">
             <div id="tabIndicator${id}" class="tab-indicator" style="left: 0; width: 50%"></div>
-            <button id="fixedBtn${id}" class="px-1 py-1 text-xs text-white hover:bg-gray-500 transition-colors tab-button flex-1">
+            <button id="fixedBtn${id}" class="px-1 py-1 text-xs text-white transition-colors tab-button flex-1">
               Fixed
             </button>
-            <button id="expressionBtn${id}" class="px-1 py-1 text-xs text-gray-400 hover:bg-gray-500 transition-colors tab-button flex-1">
+            <button id="expressionBtn${id}" class="px-1 py-1 text-xs text-gray-400 transition-colors tab-button flex-1">
               Expression
             </button>
           </div>
@@ -776,12 +822,12 @@ function getOptionContent(optionType, id) {
     case "system-message":
       return `
         <!-- Fixed Section Content (Default) -->
-        <div id="fixedSection${id}" class="relative flex bg-[#000814] border border-gray-600 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-700 focus:ring-inset">
+        <div id="fixedSection${id}" class="relative flex bg-[#000814] border border-gray-600 rounded-lg focus:outline-none focus:ring-1 focus:ring-amber-500 focus:ring-inset">
           <div class="w-6 xs:w-10 bg-gray-600 border-r border-gray-500 flex items-center justify-center rounded-l-md">
             <span class="text-gray-300 text-xs xs:text-sm font-mono">fx</span>
           </div>
           <div class="flex-1 relative">
-            <textarea id="systemMessageTextarea${id}" class="w-full h-full px-2 py-1 xs:px-2 xs:py-1 bg-transparent text-white placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-blue-700 rounded-r-md focus:ring-inset resize-none min-h-[100px] xs:min-h-[120px] text-xs xs:text-sm font-mono pr-6 xs:pr-8" placeholder="### **Output Format:**">### **Output Format:**
+            <textarea id="systemMessageTextarea${id}" class="w-full h-full px-2 py-1 xs:px-2 xs:py-1 bg-transparent text-white placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-amber-500 rounded-r-md focus:ring-inset resize-none min-h-[100px] xs:min-h-[120px] text-xs xs:text-sm font-mono pr-6 xs:pr-8" placeholder="### **Output Format:**">### **Output Format:**
 - Provide the result **strictly in JSON format** with a single port representative.</textarea>
             <button class="absolute bottom-1 right-1 xs:bottom-2 xs:right-2 text-gray-400 hover:text-orange-500 transition-colors rounded p-1">
               <svg class="w-3 h-3 xs:w-4 xs:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -803,7 +849,7 @@ function getOptionContent(optionType, id) {
               <input
                 type="text"
                 id="expressionInput${id}"
-                class="flex-1 px-2 py-1 xs:px-2 xs:py-1 bg-transparent text-white placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-blue-700 focus:ring-inset text-sm xs:text-base"
+                class="flex-1 px-2 py-1 xs:px-2 xs:py-1 bg-transparent text-white placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-amber-500 focus:ring-inset text-sm xs:text-base"
                 placeholder="Enter expression..."
               />
               <button
@@ -872,7 +918,7 @@ function getOptionContent(optionType, id) {
     case "max-iterations":
       return `
         <div id="fixedSection${id}" class="relative">
-          <input type="number" class="w-full bg-[#000814] text-white px-2 py-2 xs:px-2 xs:py-2 rounded-md border border-gray-600 focus:outline-none focus:ring-1 focus:ring-blue-700 focus:ring-inset text-xs xs:text-sm" placeholder="Enter max iterations..." />
+          <input type="number" class="w-full bg-[#000814] text-white px-2 py-2 xs:px-2 xs:py-2 rounded-md border border-gray-600 focus:outline-none focus:ring-1 focus:ring-amber-500 focus:ring-inset text-xs xs:text-sm" placeholder="Enter max iterations..." />
         </div>
         <div id="expressionSection${id}" class="relative z-10 hidden">
           <div class="relative">
@@ -887,7 +933,7 @@ function getOptionContent(optionType, id) {
               <input
                 type="text"
                 id="expressionInput${id}"
-                class="flex-1 px-2 py-1 xs:px-2 xs:py-1 bg-transparent text-white placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-blue-700 focus:ring-inset text-sm xs:text-base"
+                class="flex-1 px-2 py-1 xs:px-2 xs:py-1 bg-transparent text-white placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-amber-500 focus:ring-inset text-sm xs:text-base"
                 placeholder="Enter expression..."
               />
               <button
@@ -962,8 +1008,8 @@ function getOptionContent(optionType, id) {
                 <input type="checkbox" id="returnStepsToggle${id}" class="sr-only" />
                 <label for="returnStepsToggle${id}" class="flex items-center cursor-pointer">
                   <div class="relative">
-                    <div class="block bg-gray-600 w-6 h-3 xs:w-9 xs:h-4 rounded-full transition-colors duration-200"></div>
-                    <div class="dot absolute left-0 top-0 bg-white w-3 h-3 xs:w-4 xs:h-4 rounded-full transition-transform duration-300"></div>
+                    <div class="block bg-[#000814] w-6 h-3 xs:w-10 xs:h-5 rounded-full transition-colors duration-200"></div>
+                    <div class="dot absolute left-0.5 top-0.5 bg-white w-3 h-3 xs:w-4 xs:h-4 rounded-full transition-transform duration-300"></div>
                   </div>
                 </label>
               </div>
@@ -982,7 +1028,7 @@ function getOptionContent(optionType, id) {
               <input
                 type="text"
                 id="expressionInput${id}"
-                class="flex-1 px-2 py-1 xs:px-2 xs:py-1 bg-transparent text-white placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-blue-700 focus:ring-inset text-sm xs:text-base"
+                class="flex-1 px-2 py-1 xs:px-2 xs:py-1 bg-transparent text-white placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-amber-500 focus:ring-inset text-sm xs:text-base"
                 placeholder="Enter expression..."
               />
               <button
@@ -1057,8 +1103,8 @@ function getOptionContent(optionType, id) {
                 <input type="checkbox" id="binaryImagesToggle${id}" class="sr-only" />
                 <label for="binaryImagesToggle${id}" class="flex items-center cursor-pointer">
                   <div class="relative">
-                    <div class="block bg-gray-600 w-6 h-3 xs:w-9 xs:h-4 rounded-full transition-colors duration-200"></div>
-                    <div class="dot absolute left-0 top-0 bg-white w-3 h-3 xs:w-4 xs:h-4 rounded-full transition-transform duration-300"></div>
+                  <div class="block bg-[#000814] w-6 h-3 xs:w-10 xs:h-5 rounded-full transition-colors duration-200"></div>
+                  <div class="dot absolute left-0.5 top-0.5 bg-white w-3 h-3 xs:w-4 xs:h-4 rounded-full transition-transform duration-300"></div>
                   </div>
                 </label>
               </div>
@@ -1077,7 +1123,7 @@ function getOptionContent(optionType, id) {
               <input
                 type="text"
                 id="expressionInput${id}"
-                class="flex-1 px-2 py-1 xs:px-2 xs:py-1 bg-transparent text-white placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-blue-700 focus:ring-inset text-sm xs:text-base"
+                class="flex-1 px-2 py-1 xs:px-2 xs:py-1 bg-transparent text-white placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-amber-500 focus:ring-inset text-sm xs:text-base"
                 placeholder="Enter expression..."
               />
               <button
@@ -1189,3 +1235,27 @@ function initializeRetrySettingsToggle() {
 
 // Call this after DOM is ready
 initializeRetrySettingsToggle();
+
+  const toggle = document.getElementById("dropdownToggle");
+  const menu = document.getElementById("dropdownMenu");
+  const label = document.getElementById("dropdownLabel");
+
+  toggle.addEventListener("click", (e) => {
+    e.stopPropagation();
+    menu.classList.toggle("hidden");
+  });
+
+  document.querySelectorAll(".type-option").forEach((item) => {
+    item.addEventListener("click", (e) => {
+      document
+        .querySelectorAll(".type-option")
+        .forEach((el) => el.classList.remove("text-orange-500"));
+      const val = item.getAttribute("data-type");
+      label.textContent = val;
+      item.classList.add("text-orange-500");
+      menu.classList.add("hidden");
+    });
+  });
+
+  window.addEventListener("click", () => menu.classList.add("hidden"));
+

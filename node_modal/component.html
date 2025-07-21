@@ -401,9 +401,8 @@
           >
           <!-- Hover controls - only show for "Define below" option -->
           <div
-            class="flex items-center gap-1 hover-controls"
+            class="flex items-center gap-1 hover-controls display-none"
             id="promptHoverControls"
-            style="display: none"
           >
             <button class="text-gray-400 hover:text-orange-500">
               <svg
@@ -421,8 +420,7 @@
             >
               <div
                 id="promptTabIndicator"
-                class="tab-indicator"
-                style="left: 0; width: 50%"
+                class="tab-indicator left-0 width-1/2"
               ></div>
               <button
                 id="promptFixedBtn"
@@ -809,9 +807,9 @@
           </div>
 
           <!-- Fixed/Expression Top Right (outside) -->
-          <div class="absolute -top-7 right-0 hidden group-hover:block">
+          <div class="absolute -top-7 right-20 hidden group-hover:block">
             <div class="flex items-center bg-gray-600 rounded relative">
-              <div class="tab-indicator w-1/2" style="left: 0"></div>
+              <div class="tab-indicator w-1/2 left-0"></div>
               <button class="px-2 py-1 text-xs text-white tab-button z-10">
                 Fixed
               </button>
@@ -851,7 +849,7 @@
             <div class="relative">
               <button
                 id="dropdownToggle"
-                class="flex items-center gap-1 px-3 py-2 text-sm text-white border-l border-gray-700 hover:text-orange-500"
+                class="flex items-center gap-1 px-3 py-2 text-sm text-white border-l border-gray-700 hover:text-orange-500 focus:outline-none focus:ring-1 focus:ring-amber-500 focus:ring-inset"
               >
                 <span id="dropdownLabel">String</span>
                 <svg
@@ -915,7 +913,7 @@
             <!-- Bottom Right Fixed/Expression -->
             <div class="absolute -bottom-7 right-0 hidden group-hover:block">
               <div class="flex items-center bg-gray-600 rounded relative">
-                <div class="tab-indicator w-1/2" style="left: 0"></div>
+                <div class="tab-indicator w-1/2 left-0"></div>
                 <button class="px-2 py-1 text-xs text-white tab-button z-10">
                   Fixed
                 </button>

@@ -91,7 +91,7 @@
   /* Delete button styling */
   .delete-btn {
     position: absolute;
-    left: -25px;
+    left: -20px;
     top: 12px;
     transform: translateY(-50%);
     color: white;

@@ -165,13 +165,13 @@ if (rightResizeHandle) {
 }
 
 // Reset panel sizes on window resize
-window.addEventListener("resize", () => {
-  if (window.innerWidth < 1280) {
-    aiAgentPanel.style.marginLeft = ""
-    aiAgentPanel.style.marginRight = ""
-    aiAgentPanel.style.width = ""
-  }
-})
+// window.addEventListener("resize", () => {
+//   if (window.innerWidth < 1280) {
+//     aiAgentPanel.style.marginLeft = ""
+//     aiAgentPanel.style.marginRight = ""
+//     aiAgentPanel.style.width = ""
+//   }
+// })
 
 // Prevent modal close when clicking inside modal content
 const modalContent = document.querySelector(".max-w-8xl") || document.querySelector(".modal-container")
@@ -260,6 +260,7 @@ function initializeToggle(id) {
   if (!fixedBtn || !expressionBtn || !tabIndicator) return;
 
   const moveIndicator = (btn) => {
+    console.log(`Moving indicator in Dynamic for ${btn}`);
     const parent = btn.parentElement;
     if (!parent) return;
     const btnRect = btn.getBoundingClientRect();
@@ -447,7 +448,7 @@ function handlePromptSourceChange(selectedValue) {
   const promptDefineContent = document.getElementById("promptDefineContent")
   const promptHoverControls = document.getElementById("promptHoverControls")
 
-  console.log(`Prompt source changed to: ${selectedValue}`)
+  // console.log(`Prompt source changed to: ${selectedValue}`)
 
   if (selectedValue === "Connected Chat Trigger Node") {
     // Show connected content, hide define content and hover controls
@@ -468,11 +469,11 @@ function initializePromptExpressionInput() {
   const result = document.getElementById("promptExpressionResult")
 
   if (!input || !dropdown || !result) {
-    console.error("Prompt expression input elements not found")
+    // console.error("Prompt expression input elements not found")
     return
   }
 
-  console.log("Initializing prompt expression input")
+  // console.log("Initializing prompt expression input")
 
   const showDropdown = () => {
     setTimeout(() => {
@@ -543,6 +544,17 @@ document.addEventListener("click", (e) => {
   if (addOptionBtn && addOptionDropdown && !addOptionBtn.contains(e.target) && !addOptionDropdown.contains(e.target)) {
     addOptionDropdown.classList.add("hidden")
   }
+
+
+  // Close expression preview dropdowns
+  document.querySelectorAll(".expression-section").forEach(section => {
+    const dropdown = section.querySelector(".absolute.top-full");
+    const input = section.querySelector("input[type='text']");
+    
+    if (dropdown && !dropdown.contains(e.target)) {
+      dropdown.classList.add("hidden");
+    }
+  });
 })
 
 // Initialize all components
@@ -591,11 +603,11 @@ function initializeAddOption(id) {
     return
   }
 
-console.log(`Initializing Add Option...${optionCounter}`)
+// console.log(`Initializing Add Option...${optionCounter}`)
   // Add default System Message
   addOptionSection("system-message", optionCounter++)
   updateAddOptionVisibility()
-console.log(`Initializing Add Option...${optionCounter}`)
+// console.log(`Initializing Add Option...${optionCounter}`)
 
   // Toggle dropdown
   addOptionBtn.addEventListener("click", (e) => {
@@ -616,8 +628,8 @@ console.log(`Initializing Add Option...${optionCounter}`)
         activeOptions.push(optionType)
         addOptionSection(optionType, optionCounter++)
         addOptionDropdown.classList.add("hidden")
-        console.log(`ActiveOption: ${activeOptions}`)
-        console.log(`Added option: ${optionType} with ID ${optionCounter - 1}`)
+        // console.log(`ActiveOption: ${activeOptions}`)
+        // console.log(`Added option: ${optionType} with ID ${optionCounter - 1}`)
         updateDropdownOptions()
         updateAddOptionVisibility()
         if (selectArrow) {
@@ -669,13 +681,13 @@ function updateAddOptionVisibility() {
 
 function addOptionSection(optionType, id) {
   const container = document.getElementById("dynamicOptionsContainer")
-console.log(`Adding option section: ${optionType} with ID ${id}`)
+// console.log(`Adding option section: ${optionType} with ID ${id}`)
 waitForElement(`#expressionBtn${id}`, 1000).then(() => {
   initializeToggle(id);
   initializeExpressionInput(id);
-  console.log(`✅ Expression section fully ready: ${id}`);
+  // console.log(`✅ Expression section fully ready: ${id}`);
 }).catch(err => {
-  console.warn(err.message);
+  // console.warn(err.message);
 });
 
   // Tooltip messages for each option type
@@ -768,25 +780,6 @@ waitForElement(`#expressionBtn${id}`, 1000).then(() => {
  }
 
 
-   //initializeToggle(id); // Run this immediately
-
-// waitForElement(`#toggleExpression${id}`, 1000)
-//   .then(() => {
-//     if (optionType === "system-message" || optionType === "max-iterations") {
-//       initializeExpressionInput(id);
-//     }
-//     if (optionType === "return-intermediate-steps") {
-//       initializeToggleSwitch(`returnStepsToggle${id}`, `returnStepsContent${id}`);
-//     }
-//     if (optionType === "automatically-passthrough-binary-images") {
-//       initializeToggleSwitch(`binaryImagesToggle${id}`, `binaryImagesContent${id}`);
-//     }
-//     console.log(`✅ Successfully initialized: ${optionType} with ID ${id}`);
-//   })
-//   .catch((err) => {
-//     console.warn(`❌ ${err}`);
-//   });
-
 
   requestAnimationFrame(() => {
   // Initialize toggle immediately
@@ -806,9 +799,9 @@ waitForElement(`#expressionBtn${id}`, 1000).then(() => {
         if (optionType === "automatically-passthrough-binary-images") {
           initializeToggleSwitch(`binaryImagesToggle${id}`, `binaryImagesContent${id}`)
         }
-        console.log(`✅ Initialized after DOM ready: ${optionType} with ID ${id}`)
+        // console.log(`✅ Initialized after DOM ready: ${optionType} with ID ${id}`)
       } else {
-        console.warn(`⚠️ toggleExpression${id} not found at init time.`)
+        // console.warn(`⚠️ toggleExpression${id} not found at init time.`)
       }
     })
   }, 0)
@@ -817,7 +810,7 @@ waitForElement(`#expressionBtn${id}`, 1000).then(() => {
 }
 
 function getOptionContent(optionType, id) {
-  console.log(`Generating content for option: ${optionType} with ID ${id}`)
+  // console.log(`Generating content for option: ${optionType} with ID ${id}`)
   switch (optionType) {
     case "system-message":
       return `
@@ -1236,27 +1229,208 @@ function initializeRetrySettingsToggle() {
 // Call this after DOM is ready
 initializeRetrySettingsToggle();
 
-  const toggle = document.getElementById("dropdownToggle");
-  const menu = document.getElementById("dropdownMenu");
-  const label = document.getElementById("dropdownLabel");
 
-  toggle.addEventListener("click", (e) => {
+
+// Edit Fields Functions 
+// const toggle = document.getElementById("dropdownToggle");
+// const menu = document.getElementById("dropdownMenu");
+// const label = document.getElementById("dropdownLabel");
+// const icon = document.getElementById("dropdownIcon");
+// const arrow = document.getElementById("dropdownArrow3");
+
+// // Toggle dropdown with triangle
+// toggle.addEventListener("click", (e) => {
+//   e.stopPropagation();
+//   menu.classList.toggle("hidden");
+//   arrow.classList.toggle("hidden");
+//   icon.style.transform = menu.classList.contains("hidden") ? "rotate(0deg)" : "rotate(180deg)";
+// });
+
+
+// // Update label with icon
+// document.querySelectorAll(".type-option").forEach((item) => {
+//   item.addEventListener("click", () => {
+//       document
+//     .querySelectorAll(".type-option")
+//     .forEach((el) => el.classList.remove("text-orange-500"));
+//     item.classList.add("text-orange-500");
+//     const text = item.querySelector("span").textContent;
+//     const svg = item.querySelector("svg").outerHTML;
+//     document.getElementById("dropdownLabel").innerHTML = svg + " <span>" + text + "</span>";
+//     document.getElementById("dropdownMenu").classList.add("hidden");
+//     document.getElementById("dropdownArrow3").classList.add("hidden");
+//     document.getElementById("dropdownIcon").style.transform = "rotate(0deg)";
+//   });
+// });
+
+// // Close on outside click
+// window.addEventListener("click", () => {
+//   menu.classList.add("hidden");
+//   arrow.classList.add("hidden");
+//   icon.style.transform = "rotate(0deg)";
+// });
+
+// // Delete name+value pair
+// document.querySelectorAll(".delete-btn").forEach(btn => {
+//   btn.addEventListener("click", (e) => {
+//     e.preventDefault();
+//     e.stopPropagation();
+//     const wrapper = btn.closest(".name-value-wrapper");
+//     if (wrapper) wrapper.remove();
+//   });
+// });
+
+
+// document.querySelectorAll(".expression-btn").forEach(btn => {
+//   btn.addEventListener("click", (e) => {
+//     e.preventDefault();
+// console.log("Expression button clicked:", btn);
+//     const target = btn.getAttribute("data-target");
+//     const fieldGroup = btn.closest(`.${target}-field`);
+
+//     // Remove any existing expression section inside this field
+//     fieldGroup.querySelectorAll(".expression-section").forEach(sec => sec.remove());
+
+//     // Clone the template
+//     const template = document.getElementById("expressionTemplate");
+//     const clone = template.content.cloneNode(true);
+
+//     // Insert right after the field
+//     fieldGroup.appendChild(clone);
+//   });
+// });
+
+const toggle = document.getElementById("dropdownToggle");
+const menu = document.getElementById("dropdownMenu");
+const label = document.getElementById("dropdownLabel");
+const icon = document.getElementById("dropdownIcon");
+const arrow = document.getElementById("dropdownArrow3");
+
+// Toggle dropdown with triangle
+toggle.addEventListener("click", (e) => {
+  e.stopPropagation();
+  menu.classList.toggle("hidden");
+  arrow.classList.toggle("hidden");
+  icon.style.transform = menu.classList.contains("hidden") ? "rotate(0deg)" : "rotate(180deg)";
+});
+
+// Update label with icon
+document.querySelectorAll(".type-option").forEach((item) => {
+  item.addEventListener("click", () => {
+    document.querySelectorAll(".type-option").forEach((el) => el.classList.remove("text-orange-500"));
+    item.classList.add("text-orange-500");
+    const text = item.querySelector("span").textContent;
+    const svg = item.querySelector("svg").outerHTML;
+    document.getElementById("dropdownLabel").innerHTML = svg + " <span>" + text + "</span>";
+    document.getElementById("dropdownMenu").classList.add("hidden");
+    document.getElementById("dropdownArrow3").classList.add("hidden");
+    document.getElementById("dropdownIcon").style.transform = "rotate(0deg)";
+  });
+});
+
+// Close on outside click
+window.addEventListener("click", () => {
+  menu.classList.add("hidden");
+  arrow.classList.add("hidden");
+  icon.style.transform = "rotate(0deg)";
+});
+
+// Delete name+value pair
+document.querySelectorAll(".delete-btn").forEach(btn => {
+  btn.addEventListener("click", (e) => {
+    e.preventDefault();
     e.stopPropagation();
-    menu.classList.toggle("hidden");
+    const wrapper = btn.closest(".name-value-wrapper");
+    if (wrapper) wrapper.remove();
   });
+});
 
-  document.querySelectorAll(".type-option").forEach((item) => {
-    item.addEventListener("click", (e) => {
-      document
-        .querySelectorAll(".type-option")
-        .forEach((el) => el.classList.remove("text-orange-500"));
-      const val = item.getAttribute("data-type");
-      label.textContent = val;
-      item.classList.add("text-orange-500");
-      menu.classList.add("hidden");
-    });
+// Handle Expression/Fixed toggle
+document.querySelectorAll(".expression-btn, .tab-button").forEach(btn => {
+  btn.addEventListener("click", (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    
+    const isExpressionBtn = btn.classList.contains("expression-btn");
+    const target = btn.getAttribute("data-target") || btn.closest("[data-target]")?.getAttribute("data-target");
+    const fieldGroup = btn.closest(`.${target}-field`);
+    const tabGroup = btn.closest(".flex.items-center.bg-gray-600");
+    
+    if (!fieldGroup) return;
+    
+
+
+    // Update tab indicator
+    if (tabGroup) {
+      const tabIndicator = tabGroup.querySelector(".tab-indicator");
+
+      const moveIndicator = (btn) => {
+      const parent = btn.parentElement;
+      if (!parent) return;
+      const btnRect = btn.getBoundingClientRect();
+      const parentRect = parent.getBoundingClientRect();
+      const left = btnRect.left - parentRect.left;
+      const width = btnRect.width;
+      tabIndicator.style.left = `${left}px`;
+      tabIndicator.style.width = `${width-4}px`;
+    };
+    let id;
+    target == "name" ? id = 4 : id = 5;
+    const expressionBtn = document.getElementById(`expressionBtn${id}`);
+    const fixedBtn = document.getElementById(`fixedBtn${id}`);
+
+      if (isExpressionBtn) {
+        moveIndicator(expressionBtn);
+        expressionBtn.classList.add("text-white");
+        expressionBtn.classList.remove("text-gray-400", "inactive");
+        fixedBtn.classList.add("text-gray-400", "inactive");
+        fixedBtn.classList.remove("text-white");
+      } else {
+        moveIndicator(fixedBtn);
+        fixedBtn.classList.add("text-white");
+        fixedBtn.classList.remove("text-gray-400", "inactive");
+        expressionBtn.classList.add("text-gray-400", "inactive");
+        expressionBtn.classList.remove("text-white");
+      }
+    }
+    
+    // Handle expression/fixed toggle
+    if (isExpressionBtn) {
+      console.log("Switching to expression mode for:", target);
+      // Switch to expression mode
+      const input = fieldGroup.querySelector("input[type='text']");
+      const inputValue = input ? input.value : "";
+      
+      // Remove any existing expression section
+      fieldGroup.querySelectorAll(".expression-section").forEach(sec => sec.remove());
+      
+      // Create and insert expression section
+      const template = document.getElementById("expressionTemplate");
+      const clone = template.content.cloneNode(true);
+      const expressionInput = clone.querySelector("input[type='text']");
+      if (expressionInput && inputValue) expressionInput.value = inputValue;
+      
+      // Hide original input and append expression
+      if (input) input.style.display = "none";
+      fieldGroup.querySelector(".border.border-gray-800")?.classList.add("hidden");
+      fieldGroup.appendChild(clone);
+    } else {
+      console.log("Switching to fixed mode for:", target);
+      // Switch to fixed mode
+      const expressionSection = fieldGroup.querySelector(".expression-section");
+      const expressionInput = expressionSection?.querySelector("input[type='text']");
+      const expressionValue = expressionInput ? expressionInput.value : "";
+      
+      // Show original input and set value
+      const originalInput = fieldGroup.querySelector("input[type='text']");
+      if (originalInput) {
+        originalInput.style.display = "";
+        if (expressionValue) originalInput.value = expressionValue;
+      }
+      
+      // Remove expression section
+      expressionSection?.remove();
+      fieldGroup.querySelector(".border.border-gray-800")?.classList.remove("hidden");
+    }
   });
-
-  window.addEventListener("click", () => menu.classList.add("hidden"));
-
-
+});

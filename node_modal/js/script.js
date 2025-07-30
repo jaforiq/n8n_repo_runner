@@ -839,7 +839,7 @@ function getOptionContent(optionType, id) {
         <div id="expressionSection${id}" class="relative z-10 hidden">
           <div class="relative">
             <div
-              class="flex items-center bg-[#000814] border border-gray-600 rounded-md overflow-hidden border border-gray-500"
+              class="flex items-center bg-[#000814]  rounded-md overflow-hidden border border-gray-500"
             >
               <div
                 class="px-2 py-1.5 xs:px-2 xs:py-1.5 bg-gray-600 border-r border-gray-500 italic text-gray-300 text-xs xs:text-sm"
@@ -923,7 +923,7 @@ function getOptionContent(optionType, id) {
         <div id="expressionSection${id}" class="relative z-10 hidden">
           <div class="relative">
             <div
-              class="flex items-center bg-[#000814] border border-gray-600 rounded-md overflow-hidden border border-gray-500"
+              class="flex items-center bg-[#000814]  rounded-md overflow-hidden border border-gray-500"
             >
               <div
                 class="px-2 py-1.5 xs:px-2 xs:py-1.5 bg-gray-600 border-r border-gray-500 italic text-gray-300 text-xs xs:text-sm"
@@ -1018,7 +1018,7 @@ function getOptionContent(optionType, id) {
         <div id="expressionSection${id}" class="relative z-10 hidden">
           <div class="relative">
             <div
-              class="flex items-center bg-[#000814] border border-gray-600 rounded-md overflow-hidden border border-gray-500"
+              class="flex items-center bg-[#000814] rounded-md overflow-hidden border border-gray-500"
             >
               <div
                 class="px-2 py-1.5 xs:px-2 xs:py-1.5 bg-gray-600 border-r border-gray-500 italic text-gray-300 text-xs xs:text-sm"
@@ -1113,7 +1113,7 @@ function getOptionContent(optionType, id) {
         <div id="expressionSection${id}" class="relative z-10 hidden">
           <div class="relative">
             <div
-              class="flex items-center bg-[#000814] border border-gray-600 rounded-md overflow-hidden border border-gray-500"
+              class="flex items-center bg-[#000814] rounded-md overflow-hidden border border-gray-500"
             >
               <div
                 class="px-2 py-1.5 xs:px-2 xs:py-1.5 bg-gray-600 border-r border-gray-500 italic text-gray-300 text-xs xs:text-sm"

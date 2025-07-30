@@ -55,7 +55,7 @@
 
   /* Hover text color only on inactive tab */
   .tab-button.inactive:hover {
-    color: #f97316; /* Tailwind's orange-500 */
+    color: #f97316; 
   }
 
   .tab-button {
@@ -168,6 +168,13 @@
   .option-label:hover .help-icon {
     opacity: 1;
   }
+
+  .expression-section {
+  position: absolute;
+  inset: 0;
+  width: 100%;       /* fill its parent */
+  /* max-width: 387px;  or whatever fixed width you need */
+}
 
   /* Responsive adjustments */
   @media (max-width: 480px) {

@@ -260,7 +260,7 @@ function initializeToggle(id) {
   if (!fixedBtn || !expressionBtn || !tabIndicator) return;
 
   const moveIndicator = (btn) => {
-    console.log(`Moving indicator in Dynamic for ${btn}`);
+    // console.log(`Moving indicator in Dynamic for ${btn}`);
     const parent = btn.parentElement;
     if (!parent) return;
     const btnRect = btn.getBoundingClientRect();
@@ -547,14 +547,14 @@ document.addEventListener("click", (e) => {
 
 
   // Close expression preview dropdowns
-  document.querySelectorAll(".expression-section").forEach(section => {
-    const dropdown = section.querySelector(".absolute.top-full");
-    const input = section.querySelector("input[type='text']");
+  // document.querySelectorAll(".expression-section").forEach(section => {
+  //   const dropdown = section.querySelector(".absolute.top-full");
+  //   const input = section.querySelector("input[type='text']");
     
-    if (dropdown && !dropdown.contains(e.target)) {
-      dropdown.classList.add("hidden");
-    }
-  });
+  //   if (dropdown && !dropdown.contains(e.target)) {
+  //     dropdown.classList.add("hidden");
+  //   }
+  // });
 })
 
 // Initialize all components
@@ -832,7 +832,7 @@ function getOptionContent(optionType, id) {
         <div id="expressionSection${id}" class="relative z-10 hidden">
           <div class="relative">
             <div
-              class="flex items-center bg-[#000814] border border-gray-600 rounded-md overflow-hidden border border-gray-500"
+              class="flex items-center bg-[#000814] rounded-md overflow-hidden border border-gray-500"
             >
               <div
                 class="px-2 py-1.5 xs:px-2 xs:py-1.5 bg-gray-600 border-r border-gray-500 italic text-gray-300 text-xs xs:text-sm"
@@ -916,7 +916,7 @@ function getOptionContent(optionType, id) {
         <div id="expressionSection${id}" class="relative z-10 hidden">
           <div class="relative">
             <div
-              class="flex items-center bg-[#000814] border border-gray-600 rounded-md overflow-hidden border border-gray-500"
+              class="flex items-center bg-[#000814]  rounded-md overflow-hidden border border-gray-500"
             >
               <div
                 class="px-2 py-1.5 xs:px-2 xs:py-1.5 bg-gray-600 border-r border-gray-500 italic text-gray-300 text-xs xs:text-sm"
@@ -1011,7 +1011,7 @@ function getOptionContent(optionType, id) {
         <div id="expressionSection${id}" class="relative z-10 hidden">
           <div class="relative">
             <div
-              class="flex items-center bg-[#000814] border border-gray-600 rounded-md overflow-hidden border border-gray-500"
+              class="flex items-center bg-[#000814] rounded-md overflow-hidden border border-gray-500"
             >
               <div
                 class="px-2 py-1.5 xs:px-2 xs:py-1.5 bg-gray-600 border-r border-gray-500 italic text-gray-300 text-xs xs:text-sm"
@@ -1106,7 +1106,7 @@ function getOptionContent(optionType, id) {
         <div id="expressionSection${id}" class="relative z-10 hidden">
           <div class="relative">
             <div
-              class="flex items-center bg-[#000814] border border-gray-600 rounded-md overflow-hidden border border-gray-500"
+              class="flex items-center bg-[#000814] rounded-md overflow-hidden border border-gray-500"
             >
               <div
                 class="px-2 py-1.5 xs:px-2 xs:py-1.5 bg-gray-600 border-r border-gray-500 italic text-gray-300 text-xs xs:text-sm"
@@ -1231,75 +1231,6 @@ initializeRetrySettingsToggle();
 
 
 
-// Edit Fields Functions 
-// const toggle = document.getElementById("dropdownToggle");
-// const menu = document.getElementById("dropdownMenu");
-// const label = document.getElementById("dropdownLabel");
-// const icon = document.getElementById("dropdownIcon");
-// const arrow = document.getElementById("dropdownArrow3");
-
-// // Toggle dropdown with triangle
-// toggle.addEventListener("click", (e) => {
-//   e.stopPropagation();
-//   menu.classList.toggle("hidden");
-//   arrow.classList.toggle("hidden");
-//   icon.style.transform = menu.classList.contains("hidden") ? "rotate(0deg)" : "rotate(180deg)";
-// });
-
-
-// // Update label with icon
-// document.querySelectorAll(".type-option").forEach((item) => {
-//   item.addEventListener("click", () => {
-//       document
-//     .querySelectorAll(".type-option")
-//     .forEach((el) => el.classList.remove("text-orange-500"));
-//     item.classList.add("text-orange-500");
-//     const text = item.querySelector("span").textContent;
-//     const svg = item.querySelector("svg").outerHTML;
-//     document.getElementById("dropdownLabel").innerHTML = svg + " <span>" + text + "</span>";
-//     document.getElementById("dropdownMenu").classList.add("hidden");
-//     document.getElementById("dropdownArrow3").classList.add("hidden");
-//     document.getElementById("dropdownIcon").style.transform = "rotate(0deg)";
-//   });
-// });
-
-// // Close on outside click
-// window.addEventListener("click", () => {
-//   menu.classList.add("hidden");
-//   arrow.classList.add("hidden");
-//   icon.style.transform = "rotate(0deg)";
-// });
-
-// // Delete name+value pair
-// document.querySelectorAll(".delete-btn").forEach(btn => {
-//   btn.addEventListener("click", (e) => {
-//     e.preventDefault();
-//     e.stopPropagation();
-//     const wrapper = btn.closest(".name-value-wrapper");
-//     if (wrapper) wrapper.remove();
-//   });
-// });
-
-
-// document.querySelectorAll(".expression-btn").forEach(btn => {
-//   btn.addEventListener("click", (e) => {
-//     e.preventDefault();
-// console.log("Expression button clicked:", btn);
-//     const target = btn.getAttribute("data-target");
-//     const fieldGroup = btn.closest(`.${target}-field`);
-
-//     // Remove any existing expression section inside this field
-//     fieldGroup.querySelectorAll(".expression-section").forEach(sec => sec.remove());
-
-//     // Clone the template
-//     const template = document.getElementById("expressionTemplate");
-//     const clone = template.content.cloneNode(true);
-
-//     // Insert right after the field
-//     fieldGroup.appendChild(clone);
-//   });
-// });
-
 const toggle = document.getElementById("dropdownToggle");
 const menu = document.getElementById("dropdownMenu");
 const label = document.getElementById("dropdownLabel");
@@ -1353,15 +1284,16 @@ document.querySelectorAll(".expression-btn, .tab-button").forEach(btn => {
     
     const isExpressionBtn = btn.classList.contains("expression-btn");
     const target = btn.getAttribute("data-target") || btn.closest("[data-target]")?.getAttribute("data-target");
-    const fieldGroup = btn.closest(`.${target}-field`);
+    const fieldGroup = btn.closest(`.${target}-content`);
     const tabGroup = btn.closest(".flex.items-center.bg-gray-600");
-    
+    console.log(`fieldGroup button clicked: ${fieldGroup}`);
     if (!fieldGroup) return;
     
 
 
     // Update tab indicator
     if (tabGroup) {
+      console.log(`Tabgrp: ${tabGroup}`);
       const tabIndicator = tabGroup.querySelector(".tab-indicator");
 
       const moveIndicator = (btn) => {
@@ -1374,11 +1306,12 @@ document.querySelectorAll(".expression-btn, .tab-button").forEach(btn => {
       tabIndicator.style.left = `${left}px`;
       tabIndicator.style.width = `${width-4}px`;
     };
+
     let id;
     target == "name" ? id = 4 : id = 5;
     const expressionBtn = document.getElementById(`expressionBtn${id}`);
     const fixedBtn = document.getElementById(`fixedBtn${id}`);
-
+    // console.log(`express: ${expressionBtn}`);
       if (isExpressionBtn) {
         moveIndicator(expressionBtn);
         expressionBtn.classList.add("text-white");
@@ -1433,4 +1366,83 @@ document.querySelectorAll(".expression-btn, .tab-button").forEach(btn => {
       fieldGroup.querySelector(".border.border-gray-800")?.classList.remove("hidden");
     }
   });
+});
+
+
+  // value and value section
+// const toggle2 = document.getElementById("dropdownToggle2");
+// const menu2 = document.getElementById("dropdownMenu2");
+// const label2 = document.getElementById("dropdownLabel2");
+// const icon2 = document.getElementById("dropdownIcon2");
+// const arrow2 = document.getElementById("dropdownArrow4");
+
+// // Toggle dropdown with triangle
+// toggle2.addEventListener("click", (e) => {
+//   e.stopPropagation();
+//   menu2.classList.toggle("hidden");
+//   arrow2.classList.toggle("hidden");
+//   icon2.style.transform = menu2.classList.contains("hidden") ? "rotate(0deg)" : "rotate(180deg)";
+// });
+
+// // Update label with icon
+// document.querySelectorAll(".type-option").forEach((item) => {
+//   item.addEventListener("click", () => {
+//     document.querySelectorAll(".type-option").forEach((el) => el.classList.remove("text-orange-500"));
+//     item.classList.add("text-orange-500");
+//     const text = item.querySelector("span").textContent;
+//     const svg = item.querySelector("svg").outerHTML;
+//     document.getElementById("dropdownLabel").innerHTML = svg + " <span>" + text + "</span>";
+//     document.getElementById("dropdownMenu").classList.add("hidden");
+//     document.getElementById("dropdownArrow3").classList.add("hidden");
+//     document.getElementById("dropdownIcon").style.transform = "rotate(0deg)";
+//   });
+// });
+
+// // Close on outside click
+// window.addEventListener("click", () => {
+//   menu2.classList.add("hidden");
+//   arrow2.classList.add("hidden");
+//   icon2.style.transform = "rotate(0deg)";
+// });
+
+const toggle2 = document.getElementById("dropdownToggle2");
+const menu2   = document.getElementById("dropdownMenu2");
+const arrow2  = document.getElementById("dropdownArrow4");
+const icon2   = document.getElementById("dropdownIcon2");
+const label2  = document.getElementById("dropdownLabel2");
+
+// 1) Toggle the first dropdown as before
+toggle2.addEventListener("click", e => {
+  e.stopPropagation();
+  menu2.classList.toggle("hidden");
+  arrow2.classList.toggle("hidden");
+  icon2.style.transform = menu2.classList.contains("hidden")
+    ? "rotate(0deg)"
+    : "rotate(180deg)";
+});
+
+// 2) Handle clicks on the *second‑level* items
+document.querySelectorAll(".second-dropdown li").forEach(item => {
+  item.addEventListener("click", e => {
+    e.stopPropagation();
+    // 2a) Highlight the clicked second-level item
+    document.querySelectorAll(".second-dropdown li")
+      .forEach(li => li.classList.remove("text-orange-500"));
+    item.classList.add("text-orange-500");
+
+    // 2b) Update the toggle2 label
+    label2.textContent = item.textContent;
+
+    // 2c) Close the first dropdown
+    menu2.classList.add("hidden");
+    arrow2.classList.add("hidden");
+    icon2.style.transform = "rotate(0deg)";
+  });
+});
+
+// 3) Clicking outside closes it
+window.addEventListener("click", () => {
+  menu2.classList.add("hidden");
+  arrow2.classList.add("hidden");
+  icon2.style.transform = "rotate(0deg)";
 });

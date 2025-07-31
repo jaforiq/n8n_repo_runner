@@ -1213,7 +1213,7 @@
 
               <!-- Name Field Row  -->
               <div
-                class="flex w-[355px] py-1.5 border border-gray-800 rounded-tl bg-[#000814] relative"
+                class="flex w-[338px] py-1.5 border border-gray-800 rounded-tl bg-[#000814] relative"
               >
                 <input
                   type="text"
@@ -1241,29 +1241,42 @@
               </div>
             </div>
             <!-- Dropdown wrapper -->
-            <div class="relative flex-1">
+            <div class="dropdown-container relative inline-block flex-1">
               <!-- Toggle Button -->
               <button
                 id="dropdownToggle2"
-                class="flex items-center justify-between w-36 gap-1 py-2 px-2 text-sm bg-[#000814] text-white border-l rounded-tr border-gray-700 hover:text-orange-500 focus:outline-none focus:ring-1 focus:ring-amber-500 focus:ring-inset"
+                class="dropdown-toggle flex items-center justify-between w-40 gap-1 py-2 px-2 text-sm bg-[#000814] text-white border-l rounded-tr border-gray-700 hover:text-orange-500 focus:outline-none focus:ring-1 focus:ring-amber-500 focus:ring-inset"
               >
-                <span id="dropdownLabel2" class="flex items-center gap-2">
+                <span
+                  id="dropdownLabel2"
+                  class="dropdown-label flex-1 min-w-0 truncate whitespace-nowrap flex items-center gap-2"
+                >
                   <svg
+                    class="dropdown-prefix-icon flex-shrink-0"
                     viewBox="0 0 24 24"
                     width="12px"
                     height="12px"
-                    stroke="currentColor"
-                    fill="none"
+                    class="n8n-icon"
+                    aria-hidden="true"
+                    focusable="false"
+                    role="img"
+                    data-icon="case-upper"
+                    style="color: var(--color-text-light)"
                   >
                     <path
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
                       d="m3 15l4-8l4 8m-7-2h6m5-2h4.5a2 2 0 0 1 0 4H15V7h4a2 2 0 0 1 0 4"
-                    />
+                    ></path>
                   </svg>
-                  <span>String</span>
+                  String
                 </span>
                 <svg
                   id="dropdownIcon2"
-                  class="w-5 h-4 transition-transform duration-300"
+                  class="w-5 h-4 flex-shrink-0 dropdown-icon transition-transform duration-300"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -1276,11 +1289,10 @@
                   />
                 </svg>
               </button>
-
               <!-- Triangle (comes BEFORE the dropdown menu in DOM) -->
               <div
                 id="dropdownArrow4"
-                class="hidden absolute top-full left-1/2 transform -translate-x-1/2 -mt-[1px] z-50"
+                class="dropdown-arrow hidden absolute top-full left-1/2 transform -translate-x-1/2 -mt-[1px] z-50"
               >
                 <!-- Outer border -->
                 <div
@@ -1295,7 +1307,7 @@
               <!-- Dropdown Menu -->
               <div
                 id="dropdownMenu2"
-                class="hidden absolute right-0 mt-1.5 w-40 bg-[#000814] border border-gray-800 rounded shadow-lg z-40 text-white"
+                class="dropdown-menu hidden absolute right-0 mt-1.5 w-40 bg-[#000814] border border-gray-800 rounded shadow-lg z-40 text-white"
               >
                 <ul class="text-sm items-center mt-2">
                   <li
@@ -1303,6 +1315,7 @@
                     class="type-option group/string-item relative px-2 py-2 hover:bg-gray-700 cursor-pointer w-full flex items-center font-semibold"
                   >
                     <svg
+                      class="dropdown-prefix-icon"
                       viewBox="0 0 24 24"
                       width="12px"
                       height="12px"
@@ -1338,7 +1351,7 @@
                       />
                     </svg>
                     <ul
-                      class="second-dropdown w-40 hidden group-hover/string-item:block absolute top-0 left-full ml-1 bg-[#000814] border border-gray-700 rounded shadow-lg z-50 text-white"
+                      class="second-dropdown w-40 hidden group-hover/string-item:block absolute bottom-0 left-full ml-0 bg-[#000814] border border-gray-700 rounded shadow-lg z-50 text-white"
                     >
                       <li class="px-3 py-2 hover:bg-gray-600 cursor-pointer">
                         exists
@@ -1352,17 +1365,41 @@
                       <li class="px-3 py-2 hover:bg-gray-600 cursor-pointer">
                         is not empty
                       </li>
+                      <li class="px-3 py-2 hover:bg-gray-600 cursor-pointer">
+                        is equal to
+                      </li>
+                      <li class="px-3 py-2 hover:bg-gray-600 cursor-pointer">
+                        is not equal to
+                      </li>
+                      <li class="px-3 py-2 hover:bg-gray-600 cursor-pointer">
+                        contains
+                      </li>
+                      <li class="px-3 py-2 hover:bg-gray-600 cursor-pointer">
+                        does not contain
+                      </li>
+                      <li class="px-3 py-2 hover:bg-gray-600 cursor-pointer">
+                        start with
+                      </li>
+                      <li class="px-3 py-2 hover:bg-gray-600 cursor-pointer">
+                        does not start with
+                      </li>
+                      <li class="px-3 py-2 hover:bg-gray-600 cursor-pointer">
+                        end with
+                      </li>
+                      <li class="px-3 py-2 hover:bg-gray-600 cursor-pointer">
+                        does not end with
+                      </li>
                     </ul>
                   </li>
                   <li
                     data-type="Number"
-                    class="type-option px-2 py-2 hover:bg-gray-700 cursor-pointer w-full flex items-center font-semibold"
+                    class="type-option group/number-item relative px-2 py-2 hover:bg-gray-700 cursor-pointer w-full flex items-center font-semibold"
                   >
                     <svg
+                      class="dropdown-prefix-icon"
                       viewBox="0 0 24 24"
                       width="12px"
                       height="12px"
-                      class="n8n-icon"
                       aria-hidden="true"
                       focusable="false"
                       role="img"
@@ -1393,16 +1430,38 @@
                         d="M19 9l-7 7-7-7"
                       />
                     </svg>
+                    <ul
+                      class="second-dropdown w-40 hidden group-hover/number-item:block absolute bottom-0 left-full ml-0 bg-[#000814] border border-gray-700 rounded shadow-lg z-50 text-white"
+                    >
+                      <li class="px-3 py-2 hover:bg-gray-600 cursor-pointer">
+                        exists
+                      </li>
+                      <li class="px-3 py-2 hover:bg-gray-600 cursor-pointer">
+                        does not exist
+                      </li>
+                      <li class="px-3 py-2 hover:bg-gray-600 cursor-pointer">
+                        is Empty
+                      </li>
+                      <li class="px-3 py-2 hover:bg-gray-600 cursor-pointer">
+                        is not empty
+                      </li>
+                      <li class="px-3 py-2 hover:bg-gray-600 cursor-pointer">
+                        is equal to
+                      </li>
+                      <li class="px-3 py-2 hover:bg-gray-600 cursor-pointer">
+                        is not equal to
+                      </li>
+                    </ul>
                   </li>
                   <li
                     data-type="Date&time"
-                    class="type-option px-2 py-2 hover:bg-gray-700 cursor-pointer w-full flex items-center font-semibold"
+                    class="type-option group/datetime-item relative px-2 py-2 hover:bg-gray-700 cursor-pointer w-full flex items-center font-semibold"
                   >
                     <svg
+                      class="dropdown-prefix-icon"
                       viewBox="0 0 24 24"
                       width="12px"
                       height="12px"
-                      class="n8n-icon _icon_1jzja_123"
                       aria-hidden="true"
                       focusable="false"
                       role="img"
@@ -1435,16 +1494,44 @@
                         d="M19 9l-7 7-7-7"
                       />
                     </svg>
+                    <ul
+                      class="second-dropdown w-40 hidden group-hover/datetime-item:block absolute bottom-0 left-full ml-0 bg-[#000814] border border-gray-700 rounded shadow-lg z-50 text-white"
+                    >
+                      <li class="px-3 py-2 hover:bg-gray-600 cursor-pointer">
+                        exists
+                      </li>
+                      <li class="px-3 py-2 hover:bg-gray-600 cursor-pointer">
+                        does not exist
+                      </li>
+                      <li class="px-3 py-2 hover:bg-gray-600 cursor-pointer">
+                        is Empty
+                      </li>
+                      <li class="px-3 py-2 hover:bg-gray-600 cursor-pointer">
+                        is not empty
+                      </li>
+                      <li class="px-3 py-2 hover:bg-gray-600 cursor-pointer">
+                        is equal to
+                      </li>
+                      <li class="px-3 py-2 hover:bg-gray-600 cursor-pointer">
+                        is not equal to
+                      </li>
+                      <li class="px-3 py-2 hover:bg-gray-600 cursor-pointer">
+                        is after
+                      </li>
+                      <li class="px-3 py-2 hover:bg-gray-600 cursor-pointer">
+                        is before
+                      </li>
+                    </ul>
                   </li>
                   <li
                     data-type="Boolean"
-                    class="type-option px-2 py-2 hover:bg-gray-700 cursor-pointer w-full flex items-center font-semibold"
+                    class="type-option group/boolean-item relative px-2 py-2 hover:bg-gray-700 cursor-pointer w-full flex items-center font-semibold"
                   >
                     <svg
+                      class="dropdown-prefix-icon"
                       viewBox="0 0 24 24"
                       width="12px"
                       height="12px"
-                      class="n8n-icon"
                       aria-hidden="true"
                       focusable="false"
                       role="img"
@@ -1477,16 +1564,44 @@
                         d="M19 9l-7 7-7-7"
                       />
                     </svg>
+                    <ul
+                      class="second-dropdown w-40 hidden group-hover/boolean-item:block absolute bottom-0 left-full ml-0 bg-[#000814] border border-gray-700 rounded shadow-lg z-50 text-white"
+                    >
+                      <li class="px-3 py-2 hover:bg-gray-600 cursor-pointer">
+                        exists
+                      </li>
+                      <li class="px-3 py-2 hover:bg-gray-600 cursor-pointer">
+                        does not exist
+                      </li>
+                      <li class="px-3 py-2 hover:bg-gray-600 cursor-pointer">
+                        is Empty
+                      </li>
+                      <li class="px-3 py-2 hover:bg-gray-600 cursor-pointer">
+                        is not empty
+                      </li>
+                      <li class="px-3 py-2 hover:bg-gray-600 cursor-pointer">
+                        is true
+                      </li>
+                      <li class="px-3 py-2 hover:bg-gray-600 cursor-pointer">
+                        is false
+                      </li>
+                      <li class="px-3 py-2 hover:bg-gray-600 cursor-pointer">
+                        is equal to
+                      </li>
+                      <li class="px-3 py-2 hover:bg-gray-600 cursor-pointer">
+                        is not equal to
+                      </li>
+                    </ul>
                   </li>
                   <li
                     data-type="Array"
-                    class="type-option px-2 py-2 hover:bg-gray-700 cursor-pointer w-full flex items-center font-semibold"
+                    class="type-option group/array-item relative px-2 py-2 hover:bg-gray-700 cursor-pointer w-full flex items-center font-semibold"
                   >
                     <svg
+                      class="dropdown-prefix-icon"
                       viewBox="0 0 24 24"
                       width="12px"
                       height="12px"
-                      class="n8n-icon"
                       aria-hidden="true"
                       focusable="false"
                       role="img"
@@ -1517,16 +1632,50 @@
                         d="M19 9l-7 7-7-7"
                       />
                     </svg>
+                    <ul
+                      class="second-dropdown w-40 hidden group-hover/array-item:block absolute bottom-0 left-full ml-0 bg-[#000814] border border-gray-700 rounded shadow-lg z-50 text-white"
+                    >
+                      <li class="px-3 py-2 hover:bg-gray-600 cursor-pointer">
+                        exists
+                      </li>
+                      <li class="px-3 py-2 hover:bg-gray-600 cursor-pointer">
+                        does not exist
+                      </li>
+                      <li class="px-3 py-2 hover:bg-gray-600 cursor-pointer">
+                        is Empty
+                      </li>
+                      <li class="px-3 py-2 hover:bg-gray-600 cursor-pointer">
+                        is not empty
+                      </li>
+                      <li class="px-3 py-2 hover:bg-gray-600 cursor-pointer">
+                        length equal to
+                      </li>
+                      <li class="px-3 py-2 hover:bg-gray-600 cursor-pointer">
+                        length not equal to
+                      </li>
+                      <li class="px-3 py-2 hover:bg-gray-600 cursor-pointer">
+                        contains
+                      </li>
+                      <li class="px-3 py-2 hover:bg-gray-600 cursor-pointer">
+                        does not contain
+                      </li>
+                      <li class="px-3 py-2 hover:bg-gray-600 cursor-pointer">
+                        length greater than
+                      </li>
+                      <li class="px-3 py-2 hover:bg-gray-600 cursor-pointer">
+                        length less than
+                      </li>
+                    </ul>
                   </li>
                   <li
                     data-type="Object"
-                    class="type-option px-2 py-2 hover:bg-gray-700 cursor-pointer w-full flex items-center font-semibold"
+                    class="type-option group/object-item relative px-2 py-2 hover:bg-gray-700 cursor-pointer w-full flex items-center font-semibold"
                   >
                     <svg
+                      class="dropdown-prefix-icon"
                       viewBox="0 0 24 24"
                       width="12px"
                       height="12px"
-                      class="n8n-icon"
                       aria-hidden="true"
                       focusable="false"
                       role="img"
@@ -1561,6 +1710,22 @@
                         d="M19 9l-7 7-7-7"
                       />
                     </svg>
+                    <ul
+                      class="second-dropdown w-40 hidden group-hover/object-item:block absolute bottom-0 left-full ml-0 bg-[#000814] border border-gray-700 rounded shadow-lg z-50 text-white"
+                    >
+                      <li class="px-3 py-2 hover:bg-gray-600 cursor-pointer">
+                        exists
+                      </li>
+                      <li class="px-3 py-2 hover:bg-gray-600 cursor-pointer">
+                        does not exist
+                      </li>
+                      <li class="px-3 py-2 hover:bg-gray-600 cursor-pointer">
+                        is Empty
+                      </li>
+                      <li class="px-3 py-2 hover:bg-gray-600 cursor-pointer">
+                        is not empty
+                      </li>
+                    </ul>
                   </li>
                 </ul>
               </div>

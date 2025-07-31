@@ -1369,80 +1369,52 @@ document.querySelectorAll(".expression-btn, .tab-button").forEach(btn => {
 });
 
 
-  // value and value section
-// const toggle2 = document.getElementById("dropdownToggle2");
-// const menu2 = document.getElementById("dropdownMenu2");
-// const label2 = document.getElementById("dropdownLabel2");
-// const icon2 = document.getElementById("dropdownIcon2");
-// const arrow2 = document.getElementById("dropdownArrow4");
-
-// // Toggle dropdown with triangle
-// toggle2.addEventListener("click", (e) => {
-//   e.stopPropagation();
-//   menu2.classList.toggle("hidden");
-//   arrow2.classList.toggle("hidden");
-//   icon2.style.transform = menu2.classList.contains("hidden") ? "rotate(0deg)" : "rotate(180deg)";
-// });
-
-// // Update label with icon
-// document.querySelectorAll(".type-option").forEach((item) => {
-//   item.addEventListener("click", () => {
-//     document.querySelectorAll(".type-option").forEach((el) => el.classList.remove("text-orange-500"));
-//     item.classList.add("text-orange-500");
-//     const text = item.querySelector("span").textContent;
-//     const svg = item.querySelector("svg").outerHTML;
-//     document.getElementById("dropdownLabel").innerHTML = svg + " <span>" + text + "</span>";
-//     document.getElementById("dropdownMenu").classList.add("hidden");
-//     document.getElementById("dropdownArrow3").classList.add("hidden");
-//     document.getElementById("dropdownIcon").style.transform = "rotate(0deg)";
-//   });
-// });
-
-// // Close on outside click
-// window.addEventListener("click", () => {
-//   menu2.classList.add("hidden");
-//   arrow2.classList.add("hidden");
-//   icon2.style.transform = "rotate(0deg)";
-// });
-
-const toggle2 = document.getElementById("dropdownToggle2");
-const menu2   = document.getElementById("dropdownMenu2");
-const arrow2  = document.getElementById("dropdownArrow4");
-const icon2   = document.getElementById("dropdownIcon2");
-const label2  = document.getElementById("dropdownLabel2");
-
-// 1) Toggle the first dropdown as before
-toggle2.addEventListener("click", e => {
-  e.stopPropagation();
-  menu2.classList.toggle("hidden");
-  arrow2.classList.toggle("hidden");
-  icon2.style.transform = menu2.classList.contains("hidden")
-    ? "rotate(0deg)"
-    : "rotate(180deg)";
-});
-
-// 2) Handle clicks on the *second‑level* items
-document.querySelectorAll(".second-dropdown li").forEach(item => {
-  item.addEventListener("click", e => {
+// value and value section
+document.querySelectorAll('.dropdown-container').forEach(container => {
+  const toggle = container.querySelector('.dropdown-toggle');
+  const menu   = container.querySelector('.dropdown-menu');
+  const arrow  = container.querySelector('.dropdown-arrow');
+  const pivot  = container.querySelector('.dropdown-icon');
+  const label  = container.querySelector('.dropdown-label');
+  
+  //console.log('Toggle: ', toggle);
+  // 1. open/close first-level
+  toggle.addEventListener('click', e => {
     e.stopPropagation();
-    // 2a) Highlight the clicked second-level item
-    document.querySelectorAll(".second-dropdown li")
-      .forEach(li => li.classList.remove("text-orange-500"));
-    item.classList.add("text-orange-500");
-
-    // 2b) Update the toggle2 label
-    label2.textContent = item.textContent;
-
-    // 2c) Close the first dropdown
-    menu2.classList.add("hidden");
-    arrow2.classList.add("hidden");
-    icon2.style.transform = "rotate(0deg)";
+    menu.classList.toggle('hidden');
+    arrow.classList.toggle('hidden');
+    pivot.style.transform = menu.classList.contains('hidden')
+      ? 'rotate(0deg)'
+      : 'rotate(180deg)';
   });
-});
 
-// 3) Clicking outside closes it
-window.addEventListener("click", () => {
-  menu2.classList.add("hidden");
-  arrow2.classList.add("hidden");
-  icon2.style.transform = "rotate(0deg)";
+  container.querySelectorAll('.type-option').forEach(item => {
+    //console.log('List element: ', item);
+    item.querySelectorAll('.second-dropdown li')
+        .forEach(listelm => {
+          listelm.addEventListener('click', e => {
+            e.stopPropagation();
+            // remove previous highlights
+            container.querySelectorAll('.second-dropdown li')
+            .forEach(li => li.classList.remove('text-orange-500'));
+            listelm.classList.add('text-orange-500');
+            const prefix = item.querySelector('.dropdown-prefix-icon');
+            const text = listelm.textContent.trim();
+            // update label & prefix
+            label.innerHTML = prefix.outerHTML + ' <span>' + text + '</span>';
+
+            // close menu
+            menu.classList.add('hidden');
+            arrow.classList.add('hidden');
+            pivot.style.transform = 'rotate(0deg)';
+          })
+        })
+  });
+
+  // 3. close on outside click
+  window.addEventListener('click', () => {
+    menu.classList.add('hidden');
+    arrow.classList.add('hidden');
+    pivot.style.transform = 'rotate(0deg)';
+  });
 });

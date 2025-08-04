@@ -826,7 +826,7 @@
           <!-- Name Field -->
           <div class="flex">
             <div
-              class="fixedSection4 flex-1 relative items-center group/name-field name-content"
+              class="flex-1 relative items-center group/name-field name-content"
             >
               <!-- Fixed/Expression Hover Code Top Right -->
               <div
@@ -853,7 +853,7 @@
 
               <!-- Name Field Row  -->
               <div
-                class="flex w-[387px] py-1.5 border border-gray-800 rounded-tl bg-[#000814] relative"
+                class="fixedSection4 flex w-[387px] py-1.5 border border-gray-800 rounded-tl bg-[#000814] relative"
               >
                 <input
                   type="text"
@@ -1079,9 +1079,7 @@
             </div>
           </div>
           <!-- Value Field -->
-          <div
-            class="w-[500px] fixedSection5 group/value-field value-content relative"
-          >
+          <div class="w-[500px] group/value-field value-content relative">
             <!-- Fixed/Expression Hover Code Bottom Right -->
             <div
               class="absolute -bottom-6 right-0 group-hover/value-field:block hidden"
@@ -1107,7 +1105,7 @@
 
             <!-- Value Input -->
             <div
-              class="bg-[#000814] py-1.5 pl-1.5 rounded-b border border-gray-800 flex items-end"
+              class="fixedSection5 bg-[#000814] py-1.5 pl-1.5 rounded-b border border-gray-800 flex items-end"
             >
               <input
                 type="text"
@@ -1135,6 +1133,24 @@
             </div>
           </div>
         </div>
+      </div>
+
+      <!-- drag input field section -->
+      <div
+        id="dropZone"
+        class="w-full max-w-lg mx-auto p-6 bg-[#000814] border-2 border-dashed border-gray-500 rounded-lg flex flex-col items-center justify-center text-center text-gray-400"
+      >
+        <p class="mb-2 text-lg font-medium">
+          Drag input fields here
+          <span class="text-gray-500 mx-1">or</span>
+          <button
+            id="addFieldBtn"
+            class="text-red-500 hover:underline focus:outline-none"
+            type="button"
+          >
+            Add Field
+          </button>
+        </p>
       </div>
 
       <!-- value and value section -->
@@ -1183,10 +1199,10 @@
               </button>
             </div>
           </div>
-          <!-- Name Field -->
+          <!-- value1 Field -->
           <div class="flex">
             <div
-              class="fixedSection4 flex-1 relative items-center group/name-field name-content"
+              class="flex-1 relative items-center group/name-field name-content"
             >
               <!-- Fixed/Expression Hover Code Top Right -->
               <div
@@ -1195,14 +1211,14 @@
                 <div class="flex items-center bg-gray-600 rounded relative">
                   <div class="tab-indicator w-1/2 left-0"></div>
                   <button
-                    id="fixedBtn4"
+                    id="fixedBtn6"
                     class="px-2 py-1 text-xs text-gray-400 tab-button z-10 fixed-btn"
                     data-target="name"
                   >
                     Fixed
                   </button>
                   <button
-                    id="expressionBtn4"
+                    id="expressionBtn6"
                     class="px-2 py-1 text-xs text-gray-400 tab-button expression-btn"
                     data-target="name"
                   >
@@ -1211,9 +1227,9 @@
                 </div>
               </div>
 
-              <!-- Name Field Row  -->
+              <!-- value1 Field Row  -->
               <div
-                class="flex w-[338px] py-1.5 border border-gray-800 rounded-tl bg-[#000814] relative"
+                class="fixedSection6 flex w-[338px] py-1.5 border border-gray-800 rounded-tl bg-[#000814] relative"
               >
                 <input
                   type="text"
@@ -1731,7 +1747,7 @@
               </div>
             </div>
           </div>
-          <!-- Value Field -->
+          <!-- Value2 Field -->
           <div
             class="w-[500px] fixedSection5 group/value-field value-content relative"
           >
@@ -1758,7 +1774,7 @@
               </div>
             </div>
 
-            <!-- Value Input -->
+            <!-- Value2 Input -->
             <div
               class="bg-[#000814] py-1.5 pl-1.5 rounded-b border border-gray-800 flex items-end"
             >

@@ -593,7 +593,6 @@ function initializeAddOption(id) {
 
 console.log(`Initializing Add Option...${optionCounter}`)
   // Add default System Message
-  addOptionSection("system-message", optionCounter++)
   updateAddOptionVisibility()
 console.log(`Initializing Add Option...${optionCounter}`)
 
@@ -653,7 +652,6 @@ function updateDropdownOptions() {
 function updateAddOptionVisibility() {
   const addOptionContainer = document.getElementById("addOptionContainer")
   const availableOptions = [
-    "system-message",
     "max-iterations",
     "return-intermediate-steps",
     "automatically-passthrough-binary-images",
@@ -680,17 +678,15 @@ waitForElement(`#expressionBtn${id}`, 1000).then(() => {
 
   // Tooltip messages for each option type
   const tooltipMessages = {
-    "system-message": "The message that will be sent to the agent before the conversation starts",
     "max-iterations": "Maximum number of iterations the agent can perform before stopping",
     "return-intermediate-steps": "Whether to return intermediate steps in the agent's reasoning process",
     "automatically-passthrough-binary-images": "Automatically pass through binary image data without processing",
   }
 
   const optionLabels = {
-    "system-message": "System Message",
-    "max-iterations": "Max Iterations",
-    "return-intermediate-steps": "Return Intermediate Steps",
-    "automatically-passthrough-binary-images": "Automatically Passthrough Binary Images",
+    "max-iterations": "Strip Binary Data",
+    "return-intermediate-steps": "Ignore Type Conversion Errors",
+    "automatically-passthrough-binary-images": "Support Dot Notation",
   }
 
   // Create tooltip HTML for all options
@@ -768,26 +764,6 @@ waitForElement(`#expressionBtn${id}`, 1000).then(() => {
  }
 
 
-   //initializeToggle(id); // Run this immediately
-
-// waitForElement(`#toggleExpression${id}`, 1000)
-//   .then(() => {
-//     if (optionType === "system-message" || optionType === "max-iterations") {
-//       initializeExpressionInput(id);
-//     }
-//     if (optionType === "return-intermediate-steps") {
-//       initializeToggleSwitch(`returnStepsToggle${id}`, `returnStepsContent${id}`);
-//     }
-//     if (optionType === "automatically-passthrough-binary-images") {
-//       initializeToggleSwitch(`binaryImagesToggle${id}`, `binaryImagesContent${id}`);
-//     }
-//     console.log(`✅ Successfully initialized: ${optionType} with ID ${id}`);
-//   })
-//   .catch((err) => {
-//     console.warn(`❌ ${err}`);
-//   });
-
-
   requestAnimationFrame(() => {
   // Initialize toggle immediately
   initializeToggle(id)
@@ -797,9 +773,6 @@ waitForElement(`#expressionBtn${id}`, 1000).then(() => {
     requestAnimationFrame(() => {
       const expressionToggle = document.querySelector(`#expressionBtn${id}`)
       if (expressionToggle) {
-        if (optionType === "system-message" || optionType === "max-iterations") {
-          initializeExpressionInput(id)
-        }
         if (optionType === "return-intermediate-steps") {
           initializeToggleSwitch(`returnStepsToggle${id}`, `returnStepsContent${id}`)
         }
@@ -819,111 +792,27 @@ waitForElement(`#expressionBtn${id}`, 1000).then(() => {
 function getOptionContent(optionType, id) {
   console.log(`Generating content for option: ${optionType} with ID ${id}`)
   switch (optionType) {
-    case "system-message":
-      return `
-        <!-- Fixed Section Content (Default) -->
-        <div id="fixedSection${id}" class="relative flex bg-[#000814] border border-gray-600 rounded-lg focus:outline-none focus:ring-1 focus:ring-amber-500 focus:ring-inset">
-          <div class="w-6 xs:w-10 bg-gray-600 border-r border-gray-500 flex items-center justify-center rounded-l-md">
-            <span class="text-gray-300 text-xs xs:text-sm font-mono">fx</span>
-          </div>
-          <div class="flex-1 relative">
-            <textarea id="systemMessageTextarea${id}" class="w-full h-full px-2 py-1 xs:px-2 xs:py-1 bg-transparent text-white placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-amber-500 rounded-r-md focus:ring-inset resize-none min-h-[100px] xs:min-h-[120px] text-xs xs:text-sm font-mono pr-6 xs:pr-8" placeholder="### **Output Format:**">### **Output Format:**
-- Provide the result **strictly in JSON format** with a single port representative.</textarea>
-            <button class="absolute bottom-1 right-1 xs:bottom-2 xs:right-2 text-gray-400 hover:text-orange-500 transition-colors rounded p-1">
-              <svg class="w-3 h-3 xs:w-4 xs:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
-              </svg>
-            </button>
-          </div>
-        </div>
-        <div id="expressionSection${id}" class="relative z-10 hidden">
-          <div class="relative">
-            <div
-              class="flex items-center bg-[#000814]  rounded-md overflow-hidden border border-gray-500"
-            >
-              <div
-                class="px-2 py-1.5 xs:px-2 xs:py-1.5 bg-gray-600 border-r border-gray-500 italic text-gray-300 text-xs xs:text-sm"
-              >
-                fx
-              </div>
-              <input
-                type="text"
-                id="expressionInput${id}"
-                class="flex-1 px-2 py-1 xs:px-2 xs:py-1 bg-transparent text-white placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-amber-500 focus:ring-inset text-sm xs:text-base"
-                placeholder="Enter expression..."
-              />
-              <button
-                class="px-2 py-1 xs:px-3 xs:py-1 text-gray-400 hover:text-orange-500 transition-colors"
-              >
-                <svg
-                  class="w-3 h-3 xs:w-4 xs:h-4"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
-                  ></path>
-                </svg>
-              </button>
-            </div>
-            <div
-              id="expressionDropdown${id}"
-              class="absolute top-full left-0 right-0 mt-1 bg-[#000814] border border-gray-600 rounded-md shadow-lg z-10"
-            >
-              <div class="p-3 xs:p-4">
-                <div
-                  class="flex items-center justify-between mb-2 xs:mb-3"
-                >
-                  <div
-                    class="text-white text-xs xs:text-sm font-medium"
-                  >
-                    Result
-                  </div>
-                  <div class="flex items-center gap-2">
-                    <span class="text-gray-400 text-xs xs:text-sm"
-                      >Item</span
-                    >
-                    <span
-                      class="bg-gray-600 text-white text-xs px-2 py-1 rounded"
-                      >0</span
-                    >
-                  </div>
-                </div>
-                <div class="mb-2 xs:mb-3">
-                  <div
-                    id="expressionResult2"
-                    class="text-gray-300 text-xs xs:text-sm"
-                  >
-                    [Execute previous nodes for preview]
-                  </div>
-                </div>
-                <div
-                  class="border-t border-gray-600 pt-2 xs:pt-3"
-                >
-                  <div class="text-gray-400 text-xs">
-                    <span class="font-medium">Tip:</span> Execute
-                    previous nodes to use input data
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      `
 
     case "max-iterations":
       return `
         <div id="fixedSection${id}" class="relative">
-          <input type="number" class="w-full bg-[#000814] text-white px-2 py-2 xs:px-2 xs:py-2 rounded-md border border-gray-600 focus:outline-none focus:ring-1 focus:ring-amber-500 focus:ring-inset text-xs xs:text-sm" placeholder="Enter max iterations..." />
+            <!-- Toggle Switch on second line -->
+            <div class="flex justify-start">
+              <div class="relative">
+                <input type="checkbox" id="binaryImagesToggle${id}" class="sr-only" />
+                <label for="binaryImagesToggle${id}" class="flex items-center cursor-pointer">
+                  <div class="relative">
+                  <div class="block bg-[#000814] w-6 h-3 xs:w-10 xs:h-5 rounded-full transition-colors duration-200"></div>
+                  <div class="dot absolute left-0.5 top-0.5 bg-white w-3 h-3 xs:w-4 xs:h-4 rounded-full transition-transform duration-300"></div>
+                  </div>
+                </label>
+              </div>
+            </div>
         </div>
         <div id="expressionSection${id}" class="relative z-10 hidden">
           <div class="relative">
             <div
-              class="flex items-center bg-[#000814]  rounded-md overflow-hidden border border-gray-500"
+              class="flex items-center bg-[#000814] rounded-md overflow-hidden border border-gray-500"
             >
               <div
                 class="px-2 py-1.5 xs:px-2 xs:py-1.5 bg-gray-600 border-r border-gray-500 italic text-gray-300 text-xs xs:text-sm"
@@ -996,8 +885,7 @@ function getOptionContent(optionType, id) {
               </div>
             </div>
           </div>
-        </div>
-      `
+        </div>`
 
     case "return-intermediate-steps":
       return `
@@ -1236,26 +1124,144 @@ function initializeRetrySettingsToggle() {
 // Call this after DOM is ready
 initializeRetrySettingsToggle();
 
-  const toggle = document.getElementById("dropdownToggle");
-  const menu = document.getElementById("dropdownMenu");
-  const label = document.getElementById("dropdownLabel");
 
-  toggle.addEventListener("click", (e) => {
+const toggle2 = document.getElementById("dropdownToggle");
+const menu2 = document.getElementById("dropdownMenu");
+const label2 = document.getElementById("dropdownLabel");
+const icon = document.getElementById("dropdownIcon");
+const arrow = document.getElementById("dropdownArrow3");
+
+// Toggle dropdown with triangle
+toggle2.addEventListener("click", (e) => {
+  e.stopPropagation();
+  menu2.classList.toggle("hidden");
+  arrow.classList.toggle("hidden");
+  icon.style.transform = menu2.classList.contains("hidden") ? "rotate(0deg)" : "rotate(180deg)";
+});
+
+// Update label with icon
+document.querySelectorAll(".type-option").forEach((item) => {
+  item.addEventListener("click", () => {
+    document.querySelectorAll(".type-option").forEach((el) => el.classList.remove("text-orange-500"));
+    item.classList.add("text-orange-500");
+    const text = item.querySelector("span").textContent;
+    const svg = item.querySelector("svg").outerHTML;
+    document.getElementById("dropdownLabel").innerHTML = svg + " <span>" + text + "</span>";
+    document.getElementById("dropdownMenu").classList.add("hidden");
+    document.getElementById("dropdownArrow3").classList.add("hidden");
+    document.getElementById("dropdownIcon").style.transform = "rotate(0deg)";
+  });
+});
+
+// Close on outside click
+window.addEventListener("click", () => {
+  menu2.classList.add("hidden");
+  arrow.classList.add("hidden");
+  icon.style.transform = "rotate(0deg)";
+});
+
+// Delete name+value pair
+document.querySelectorAll(".delete-btn").forEach(btn => {
+  btn.addEventListener("click", (e) => {
+    e.preventDefault();
     e.stopPropagation();
-    menu.classList.toggle("hidden");
+    const wrapper = btn.closest(".name-value-wrapper");
+    if (wrapper) wrapper.remove();
   });
+});
 
-  document.querySelectorAll(".type-option").forEach((item) => {
-    item.addEventListener("click", (e) => {
-      document
-        .querySelectorAll(".type-option")
-        .forEach((el) => el.classList.remove("text-orange-500"));
-      const val = item.getAttribute("data-type");
-      label.textContent = val;
-      item.classList.add("text-orange-500");
-      menu.classList.add("hidden");
-    });
+// Handle Expression/Fixed toggle
+document.querySelectorAll(".expression-btn, .tab-button").forEach(btn => {
+  btn.addEventListener("click", (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    
+    const isExpressionBtn = btn.classList.contains("expression-btn");
+    const target = btn.getAttribute("data-target") || btn.closest("[data-target]")?.getAttribute("data-target");
+    const fieldGroup = btn.closest(`.${target}-content`);
+    const tabGroup = btn.closest(".flex.items-center.bg-gray-600");
+    console.log(`fieldGroup button clicked: ${fieldGroup}`);
+    if (!fieldGroup) return;
+    
+
+
+    // Update tab indicator
+    if (tabGroup) {
+      console.log(`Tabgrp: ${tabGroup}`);
+      const tabIndicator = tabGroup.querySelector(".tab-indicator");
+
+      const moveIndicator = (btn) => {
+      const parent = btn.parentElement;
+      if (!parent) return;
+      const btnRect = btn.getBoundingClientRect();
+      const parentRect = parent.getBoundingClientRect();
+      console.log('btnRect & ParentRect: ', btnRect , ' hau ', parentRect);
+      const left = btnRect.left - parentRect.left;
+      const width = btnRect.width;
+      tabIndicator.style.left = `${left}px`;
+      tabIndicator.style.width = `${width-4}px`;
+      console.log('TabIndicator: ', tabIndicator)
+    };
+
+    let id;
+    target == "name" ? id = 4 : id = 5;
+    const expressionBtn = document.getElementById(`expressionBtn${id}`);
+    const fixedBtn = document.getElementById(`fixedBtn${id}`);
+    // console.log(`express: ${expressionBtn}`);
+      if (isExpressionBtn) {
+        moveIndicator(expressionBtn);
+        console.log('ExpressionBtn: ', expressionBtn);
+        expressionBtn.classList.add("text-white");
+        expressionBtn.classList.remove("text-gray-400", "inactive");
+        fixedBtn.classList.add("text-gray-400", "inactive");
+        fixedBtn.classList.remove("text-white");
+      } else {
+        moveIndicator(fixedBtn);
+        console.log('FixedBtn: ', fixedBtn)
+        fixedBtn.classList.add("text-white");
+        fixedBtn.classList.remove("text-gray-400", "inactive");
+        expressionBtn.classList.add("text-gray-400", "inactive");
+        expressionBtn.classList.remove("text-white");
+      }
+    }
+    
+    // Handle expression/fixed toggle
+    if (isExpressionBtn) {
+      console.log("Switching to expression mode for:", target);
+      // Switch to expression mode
+      const input = fieldGroup.querySelector("input[type='text']");
+      const inputValue = input ? input.value : "";
+      
+      // Remove any existing expression section
+      fieldGroup.querySelectorAll(".expression-section").forEach(sec => sec.remove());
+      
+      // Create and insert expression section
+      const template = document.getElementById("expressionTemplate");
+      const clone = template.content.cloneNode(true);
+      const expressionInput = clone.querySelector("input[type='text']");
+      if (expressionInput && inputValue) expressionInput.value = inputValue;
+      
+      // Hide original input and append expression
+      if (input) input.style.display = "none";
+      fieldGroup.querySelector(".border.border-gray-800")?.classList.add("hidden");
+      fieldGroup.appendChild(clone);
+    } else {
+      console.log("Switching to fixed mode for:", target);
+      // Switch to fixed mode
+      const expressionSection = fieldGroup.querySelector(".expression-section");
+      const expressionInput = expressionSection?.querySelector("input[type='text']");
+      const expressionValue = expressionInput ? expressionInput.value : "";
+      
+      // Show original input and set value
+      const originalInput = fieldGroup.querySelector("input[type='text']");
+      if (originalInput) {
+        originalInput.style.display = "";
+        if (expressionValue) originalInput.value = expressionValue;
+      }
+      
+      // Remove expression section
+      expressionSection?.remove();
+      fieldGroup.querySelector(".border.border-gray-800")?.classList.remove("hidden");
+    }
   });
-
-  window.addEventListener("click", () => menu.classList.add("hidden"));
-
+});

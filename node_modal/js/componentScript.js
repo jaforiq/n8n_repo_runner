@@ -1301,10 +1301,12 @@ document.querySelectorAll(".expression-btn, .tab-button").forEach(btn => {
       if (!parent) return;
       const btnRect = btn.getBoundingClientRect();
       const parentRect = parent.getBoundingClientRect();
+      console.log('btnRect & ParentRect: ', btnRect , ' hau ', parentRect);
       const left = btnRect.left - parentRect.left;
       const width = btnRect.width;
       tabIndicator.style.left = `${left}px`;
       tabIndicator.style.width = `${width-4}px`;
+      console.log('TabIndicator: ', tabIndicator)
     };
 
     let id;
@@ -1314,12 +1316,14 @@ document.querySelectorAll(".expression-btn, .tab-button").forEach(btn => {
     // console.log(`express: ${expressionBtn}`);
       if (isExpressionBtn) {
         moveIndicator(expressionBtn);
+        console.log('ExpressionBtn: ', expressionBtn);
         expressionBtn.classList.add("text-white");
         expressionBtn.classList.remove("text-gray-400", "inactive");
         fixedBtn.classList.add("text-gray-400", "inactive");
         fixedBtn.classList.remove("text-white");
       } else {
         moveIndicator(fixedBtn);
+        console.log('FixedBtn: ', fixedBtn)
         fixedBtn.classList.add("text-white");
         fixedBtn.classList.remove("text-gray-400", "inactive");
         expressionBtn.classList.add("text-gray-400", "inactive");

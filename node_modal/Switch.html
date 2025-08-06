@@ -1,0 +1,1443 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Switch Modal</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="css/style.css" />
+  </head>
+  <body
+    class="bg-gray-100 min-h-screen flex items-center justify-center p-2 xs:p-4"
+  >
+    <!-- Trigger Button -->
+    <button
+      id="openModalBtn"
+      class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 xs:px-6 xs:py-3 rounded-lg font-medium transition-colors text-sm xs:text-base"
+    >
+      Switch
+    </button>
+    <!-- Modal Overlay -->
+    <div
+      id="modalOverlay"
+      class="fixed inset-0 bg-black bg-opacity-50 z-40 hidden"
+    >
+      <!-- Back to canvas - Outside modal -->
+      <div
+        id="backToCanvas"
+        class="absolute top-1 left-2 xs:left-6 z-50 cursor-pointer"
+      >
+        <div
+          class="flex items-center gap-2 text-white px-2 py-1 xs:px-3 xs:py-2 rounded backdrop-blur-sm hover:bg-opacity-50 transition-all"
+        >
+          <svg
+            class="w-3 h-3 xs:w-4 xs:h-4"
+            fill="currentColor"
+            viewBox="0 0 20 20"
+          >
+            <path
+              fill-rule="evenodd"
+              d="M7.707 14.707a1 1 0 01-1.414 0L2.586 11H1a1 1 0 110-2h1.586l3.707-3.707a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l2.293 2.293a1 1 0 010 1.414z"
+              clip-rule="evenodd"
+            ></path>
+          </svg>
+          <span class="text-xs xs:text-sm">Back to canvas</span>
+        </div>
+      </div>
+      <!-- Modal Container -->
+      <div class="flex items-center justify-center min-h-screen p-2 xs:p-4">
+        <div class="w-full max-w-8xl h-[95vh] xs:h-[85vh] modal-container flex">
+          <!-- INPUT Panel -->
+          <div
+            id="inputPanel"
+            class="w-full h-full sm:w-80 md:w-96 bg-dark-panel border border-dark-border rounded-t-lg sm:rounded-l-lg sm:rounded-tr-none flex flex-col z-30 transition-all duration-300 panel input-panel order-1 sm:order-1"
+          >
+            <div class="p-3 xs:p-4">
+              <h3
+                class="text-xs xs:text-sm font-medium text-gray-300 uppercase tracking-wider"
+              >
+                INPUT
+              </h3>
+            </div>
+            <div class="flex-1 flex items-center justify-center p-4 xs:p-6">
+              <div class="text-center text-white">
+                <p class="text-gray-400 mb-3 xs:mb-4 text-sm xs:text-base">
+                  No input data yet
+                </p>
+                <button
+                  class="bg-gray-600 hover:bg-gray-500 text-white px-3 py-1 xs:px-4 xs:py-2 rounded text-xs xs:text-sm transition-colors"
+                >
+                  Execute previous nodes
+                </button>
+                <p class="text-xs text-gray-500 mt-2">
+                  (From the earliest node that needs it ⏱️)
+                </p>
+              </div>
+            </div>
+          </div>
+          <!-- Edit Fields Panel -->
+          <div
+            id="aiAgentPanel"
+            class="w-full sm:min-w-[320px] md:max-w-xl lg:max-w-2xl bg-dark-panel border border-dark-border flex flex-col min-w-0 z-50 relative sm:-mt-8 sm:-mb-8 rounded-none sm:rounded-lg panel ai-agent-panel order-2 sm:order-2"
+          >
+            <!-- Resize Handles - Hidden on mobile -->
+            <div
+              id="leftResizeHandle"
+              class="hidden lg:block absolute left-0 top-0 bottom-0 w-1 bg-gray-600 hover:bg-gray-500 cursor-ew-resize opacity-0 hover:opacity-100 transition-opacity z-10"
+            ></div>
+            <div
+              id="rightResizeHandle"
+              class="hidden lg:block absolute right-0 top-0 bottom-0 w-1 bg-gray-600 hover:bg-gray-500 cursor-ew-resize opacity-0 hover:opacity-100 transition-opacity z-10"
+            ></div>
+            <!-- Edit Header -->
+            <div
+              class="p-3 xs:p-4 bg-[#000814] flex items-center justify-between rounded-t-none sm:rounded-t-lg"
+            >
+              <!-- <div class="flex items-center gap-2 text-white">
+                <svg
+                  class="svg-inline--fa fa-map-signs fa-w-16"
+                  aria-hidden="true"
+                  focusable="false"
+                  data-prefix="fas"
+                  data-icon="map-signs"
+                  role="img"
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 512 512"
+                  style="max-width: 18px"
+                >
+                  <path
+                    class=""
+                    fill="currentColor"
+                    d="M507.31 84.69L464 41.37c-6-6-14.14-9.37-22.63-9.37H288V16c0-8.84-7.16-16-16-16h-32c-8.84 0-16 7.16-16 16v16H56c-13.25 0-24 10.75-24 24v80c0 13.25 10.75 24 24 24h385.37c8.49 0 16.62-3.37 22.63-9.37l43.31-43.31c6.25-6.26 6.25-16.38 0-22.63zM224 496c0 8.84 7.16 16 16 16h32c8.84 0 16-7.16 16-16V384h-64v112zm232-272H288v-32h-64v32H70.63c-8.49 0-16.62 3.37-22.63 9.37L4.69 276.69c-6.25 6.25-6.25 16.38 0 22.63L48 342.63c6 6 14.14 9.37 22.63 9.37H456c13.25 0 24-10.75 24-24v-80c0-13.25-10.75-24-24-24z"
+                  ></path>
+                </svg>
+                <h3 class="text-white font-medium text-sm xs:text-base">
+                  Switch
+                </h3>
+              </div> -->
+              <div class="flex items-center gap-2 text-white">
+                <svg
+                  class="svg-inline--fa fa-map-signs fa-w-16"
+                  aria-hidden="true"
+                  focusable="false"
+                  data-prefix="fas"
+                  data-icon="map-signs"
+                  role="img"
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 512 512"
+                  style="max-width: 18px"
+                >
+                  <path
+                    class=""
+                    fill="currentColor"
+                    d="M507.31 84.69L464 41.37c-6-6-14.14-9.37-22.63-9.37H288V16c0-8.84-7.16-16-16-16h-32c-8.84 0-16 7.16-16 16v16H56c-13.25 0-24 10.75-24 24v80c0 13.25 10.75 24 24 24h385.37c8.49 0 16.62-3.37 22.63-9.37l43.31-43.31c6.25-6.26 6.25-16.38 0-22.63zM224 496c0 8.84 7.16 16 16 16h32c8.84 0 16-7.16 16-16V384h-64v112zm232-272H288v-32h-64v32H70.63c-8.49 0-16.62 3.37-22.63 9.37L4.69 276.69c-6.25 6.25-6.25 16.38 0 22.63L48 342.63c6 6 14.14 9.37 22.63 9.37H456c13.25 0 24-10.75 24-24v-80c0-13.25-10.75-24-24-24z"
+                  ></path>
+                </svg>
+                <h3 class="text-white font-medium text-sm xs:text-base">
+                  Switch
+                </h3>
+              </div>
+              <button
+                class="bg-red-500 hover:bg-red-600 text-white px-2 py-1 xs:px-3 xs:py-1 rounded text-xs xs:text-sm transition-colors flex items-center gap-1 xs:gap-2"
+              >
+                <svg
+                  class="w-3 h-3 xs:w-4 xs:h-4"
+                  fill="currentColor"
+                  viewBox="0 0 20 20"
+                >
+                  <path
+                    fill-rule="evenodd"
+                    d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z"
+                    clip-rule="evenodd"
+                  ></path>
+                </svg>
+                <span class="hidden xs:inline">Execute Step</span>
+                <span class="xs:hidden">Execute</span>
+              </button>
+            </div>
+            <!-- Tabs -->
+            <div class="flex border-b border-dark-border">
+              <button
+                id="parametersTab"
+                class="px-3 py-2 xs:px-4 xs:py-3 text-xs xs:text-sm font-medium text-orange-500 bg-orange-500 bg-opacity-10 border-b-2 border-orange-500"
+              >
+                Parameters
+              </button>
+              <button
+                id="settingsTab"
+                class="px-3 py-2 xs:px-4 xs:py-3 text-xs xs:text-sm font-medium text-gray-400 transition-colors"
+              >
+                Settings
+              </button>
+              <div class="flex-1"></div>
+              <div
+                class="px-3 py-2 xs:px-4 xs:py-3 flex items-center gap-1 xs:gap-2 text-xs xs:text-sm text-gray-400 hover:text-orange-500"
+              >
+                <span class="hidden sm:inline">Docs</span>
+                <svg
+                  class="w-3 h-3 xs:w-4 xs:h-4"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
+                  ></path>
+                </svg>
+              </div>
+            </div>
+            <!-- Tab Content -->
+            <div class="flex-1 overflow-auto">
+              <!-- Parameters Content -->
+              <div id="parametersContent" class="h-full">
+                <!-- Parameters Content -->
+                <div
+                  id="parametersWhitePadding"
+                  class="mx-3 xs:mx-4 mb-3 xs:mb-4 rounded-lg p-4 xs:p-6 flex-1"
+                >
+                  <div class="space-y-3 xs:space-y-4">
+                    <!-- First Agent Dropdown Section -->
+                    <div class="space-y-2 relative z-50">
+                      <div class="flex items-center justify-between">
+                        <label
+                          for="agentSelect1"
+                          class="text-xs xs:text-sm font-medium text-white"
+                          >Mode</label
+                        >
+                        <button class="text-gray-400 hover:text-orange-500">
+                          <svg
+                            class="w-3 h-3 xs:w-4 xs:h-4"
+                            fill="currentColor"
+                            viewBox="0 0 20 20"
+                          >
+                            <path
+                              d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z"
+                            ></path>
+                          </svg>
+                        </button>
+                      </div>
+                      <!-- Dropdown Container -->
+                      <div class="relative">
+                        <select
+                          id="agentSelect1"
+                          class="absolute opacity-0 pointer-events-none"
+                        >
+                          <option value="Rules">Rules</option>
+                          <option value="Expression">Expression</option>
+                        </select>
+                        <button
+                          id="customSelectBtn1"
+                          class="w-full bg-[#000814] text-white px-3 py-1 xs:px-3 xs:py-1 rounded-md flex items-center justify-between transition-colors text-sm xs:text-base border border-gray-600"
+                        >
+                          <span id="selectedText1">Rules</span>
+                          <svg
+                            class="w-4 h-4 xs:w-5 xs:h-5 transition-transform duration-200 text-gray-600"
+                            id="selectArrow1"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              stroke-linecap="round"
+                              stroke-linejoin="round"
+                              stroke-width="2"
+                              d="M19 9l-7 7-7-7"
+                            ></path>
+                          </svg>
+                        </button>
+                        <div
+                          class="relative z-50 overflow-visible"
+                          id="customDropdownWrapper1"
+                        >
+                          <!-- 🔺 Triangle (overlapping) -->
+                          <div
+                            id="dropdownArrow1"
+                            class="absolute -top-0.5 left-1/2 transform -translate-x-1/2 z-50 hidden"
+                          >
+                            <div
+                              class="w-0 h-0 border-l-8 border-r-8 border-b-8 border-l-transparent border-r-transparent border-b-[#000814]"
+                            ></div>
+                            <!-- Optional border below the tip -->
+                            <div
+                              class="w-0 h-0 mt-[-7px] border-l-8 border-r-8 border-b-8 border-l-transparent border-r-transparent border-b-[#000814] z-40"
+                            ></div>
+                          </div>
+                          <!-- Custom Options Menu -->
+                          <div
+                            id="customOptionsMenu1"
+                            class="overflow-visible absolute top-full left-0 right-0 mt-1 pt-1 bg-[#000814] border border-gray-600 rounded-lg shadow-lg z-30 max-h-60 xs:max-h-80 overflow-y-auto hidden"
+                          >
+                            <div
+                              class="custom-option"
+                              data-dropdown="1"
+                              data-value="Rules"
+                            >
+                              <div
+                                class="p-3 xs:p-4 hover:bg-gray-700 cursor-pointer border-b border-gray-600"
+                              >
+                                <h3
+                                  class="text-white font-medium mb-1 xs:mb-2 text-sm xs:text-base"
+                                >
+                                  Rules
+                                </h3>
+                                <p
+                                  class="text-gray-500 text-xs xs:text-sm leading-relaxed"
+                                >
+                                  Edit items fields one by one
+                                </p>
+                              </div>
+                            </div>
+                            <div
+                              class="custom-option"
+                              data-dropdown="1"
+                              data-value="Expression"
+                            >
+                              <div
+                                class="p-3 xs:p-4 hover:bg-gray-700 cursor-pointer border-b border-gray-600"
+                              >
+                                <h3
+                                  class="text-white font-medium mb-1 xs:mb-2 text-sm xs:text-base"
+                                >
+                                  Expression
+                                </h3>
+                                <p
+                                  class="text-gray-500 text-xs xs:text-sm leading-relaxed"
+                                >
+                                  Customize item output with JSON
+                                </p>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- Options Header with Border -->
+                    <div class="space-y-2">
+                      <h4 class="text-xs xs:text-sm font-medium text-white">
+                        Routing Rules
+                      </h4>
+                      <div class="border-b border-gray-600"></div>
+                    </div>
+
+                    <!-- value and value section -->
+                    <div class="ml-2">
+                      <!-- Name and Value container with no gap -->
+                      <div class="name-value-wrapper relative group">
+                        <!-- Delete button (appears on hover) -->
+                        <div
+                          class="hidden group-hover:flex flex-col left-0 top-1/4"
+                        >
+                          <!-- <div>
+              <svg
+                viewBox="0 0 24 24"
+                width="12px"
+                height="12px"
+                class="n8n-icon text-white"
+              >
+                <g
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                >
+                  <circle cx="9" cy="12" r="1"></circle>
+                  <circle cx="9" cy="5" r="1"></circle>
+                  <circle cx="9" cy="19" r="1"></circle>
+                  <circle cx="15" cy="12" r="1"></circle>
+                  <circle cx="15" cy="5" r="1"></circle>
+                  <circle cx="15" cy="19" r="1"></circle>
+                </g>
+              </svg>
+            </div> -->
+                          <div
+                            class="hidden absolute left-0 top-1/3 group-hover:block flex-col items-center gap-0"
+                          >
+                            <button class="delete-btn">
+                              <svg
+                                class="text-white"
+                                xmlns="http://www.w3.org/2000/svg"
+                                viewBox="0 0 100 100"
+                              >
+                                <path
+                                  d="M 46 13 C 44.35503 13 43 14.35503 43 16 L 43 18 L 32.265625 18 C 30.510922 18 28.879517 18.922811 27.976562 20.427734 L 26.433594 23 L 23 23 C 20.802666 23 19 24.802666 19 27 C 19 29.197334 20.802666 31 23 31 L 24.074219 31 L 27.648438 77.458984 C 27.88773 80.575775 30.504529 83 33.630859 83 L 66.369141 83 C 69.495471 83 72.11227 80.575775 72.351562 77.458984 L 75.925781 31 L 77 31 C 79.197334 31 81 29.197334 81 27 C 81 24.802666 79.197334 23 77 23 L 73.566406 23 L 72.023438 20.427734 C 71.120481 18.922811 69.489078 18 67.734375 18 L 57 18 L 57 16 C 57 14.35503 55.64497 13 54 13 L 46 13 z M 46 15 L 54 15 C 54.56503 15 55 15.43497 55 16 L 55 18 L 45 18 L 45 16 C 45 15.43497 45.43497 15 46 15 z M 32.265625 20 L 43.832031 20 A 1.0001 1.0001 0 0 0 44.158203 20 L 55.832031 20 A 1.0001 1.0001 0 0 0 56.158203 20 L 67.734375 20 C 68.789672 20 69.763595 20.551955 70.306641 21.457031 L 71.833984 24 L 68.5 24 A 0.50005 0.50005 0 1 0 68.5 25 L 73.5 25 L 77 25 C 78.116666 25 79 25.883334 79 27 C 79 28.116666 78.116666 29 77 29 L 23 29 C 21.883334 29 21 28.116666 21 27 C 21 25.883334 21.883334 25 23 25 L 27 25 L 61.5 25 A 0.50005 0.50005 0 1 0 61.5 24 L 28.166016 24 L 29.693359 21.457031 C 30.236405 20.551955 31.210328 20 32.265625 20 z M 64.5 24 A 0.50005 0.50005 0 1 0 64.5 25 L 66.5 25 A 0.50005 0.50005 0 1 0 66.5 24 L 64.5 24 z M 26.078125 31 L 73.921875 31 L 70.357422 77.306641 C 70.196715 79.39985 68.46881 81 66.369141 81 L 33.630859 81 C 31.53119 81 29.803285 79.39985 29.642578 77.306641 L 26.078125 31 z M 38 35 C 36.348906 35 35 36.348906 35 38 L 35 73 C 35 74.651094 36.348906 76 38 76 C 39.651094 76 41 74.651094 41 73 L 41 38 C 41 36.348906 39.651094 35 38 35 z M 50 35 C 48.348906 35 47 36.348906 47 38 L 47 73 C 47 74.651094 48.348906 76 50 76 C 51.651094 76 53 74.651094 53 73 L 53 69.5 A 0.50005 0.50005 0 1 0 52 69.5 L 52 73 C 52 74.110906 51.110906 75 50 75 C 48.889094 75 48 74.110906 48 73 L 48 38 C 48 36.889094 48.889094 36 50 36 C 51.110906 36 52 36.889094 52 38 L 52 63.5 A 0.50005 0.50005 0 1 0 53 63.5 L 53 38 C 53 36.348906 51.651094 35 50 35 z M 62 35 C 60.348906 35 59 36.348906 59 38 L 59 39.5 A 0.50005 0.50005 0 1 0 60 39.5 L 60 38 C 60 36.889094 60.889094 36 62 36 C 63.110906 36 64 36.889094 64 38 L 64 73 C 64 74.110906 63.110906 75 62 75 C 60.889094 75 60 74.110906 60 73 L 60 47.5 A 0.50005 0.50005 0 1 0 59 47.5 L 59 73 C 59 74.651094 60.348906 76 62 76 C 63.651094 76 65 74.651094 65 73 L 65 38 C 65 36.348906 63.651094 35 62 35 z M 38 36 C 39.110906 36 40 36.889094 40 38 L 40 73 C 40 74.110906 39.110906 75 38 75 C 36.889094 75 36 74.110906 36 73 L 36 38 C 36 36.889094 36.889094 36 38 36 z M 59.492188 41.992188 A 0.50005 0.50005 0 0 0 59 42.5 L 59 44.5 A 0.50005 0.50005 0 1 0 60 44.5 L 60 42.5 A 0.50005 0.50005 0 0 0 59.492188 41.992188 z"
+                                  fill="currentColor"
+                                ></path>
+                              </svg>
+                            </button>
+                          </div>
+                        </div>
+                        <!-- value1 Field -->
+                        <div class="flex">
+                          <div
+                            class="flex-1 relative items-center group/name-field name-content"
+                          >
+                            <!-- Fixed/Expression Hover Code Top Right -->
+                            <div
+                              class="absolute -top-6 right-0 hidden group-hover/name-field:block"
+                            >
+                              <div
+                                class="flex items-center bg-gray-600 rounded relative"
+                              >
+                                <div class="tab-indicator w-1/2 left-0"></div>
+                                <button
+                                  id="fixedBtn6"
+                                  class="px-2 py-1 text-xs text-gray-400 tab-button z-10 fixed-btn"
+                                  data-target="name"
+                                >
+                                  Fixed
+                                </button>
+                                <button
+                                  id="expressionBtn6"
+                                  class="px-2 py-1 text-xs text-gray-400 tab-button expression-btn"
+                                  data-target="name"
+                                >
+                                  Expression
+                                </button>
+                              </div>
+                            </div>
+
+                            <!-- value1 Field Row  -->
+                            <div
+                              class="fixedSection6 flex w-[338px] py-1.5 border border-gray-800 rounded-tl bg-[#000814] relative"
+                            >
+                              <input
+                                type="text"
+                                placeholder="value1"
+                                class="bg-transparent text-white outline-none flex-1 pl-2"
+                              />
+                              <!-- Link button -->
+                              <button
+                                class="bg-[#000814] text-gray-400 hover:text-orange-500 transition-colors"
+                              >
+                                <svg
+                                  class="w-3 h-3 xs:w-4 xs:h-4 hidden group-hover/name-field:block"
+                                  fill="none"
+                                  stroke="currentColor"
+                                  viewBox="0 0 24 24"
+                                >
+                                  <path
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                    stroke-width="2"
+                                    d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
+                                  ></path>
+                                </svg>
+                              </button>
+                            </div>
+                          </div>
+                          <!-- Dropdown wrapper -->
+                          <div
+                            class="dropdown-container relative inline-block flex-1"
+                          >
+                            <!-- Toggle Button -->
+                            <button
+                              id="dropdownToggle2"
+                              class="dropdown-toggle flex items-center justify-between w-40 gap-1 py-2 px-2 text-sm bg-[#000814] text-white border-l rounded-tr border-gray-700 hover:text-orange-500 focus:outline-none focus:ring-1 focus:ring-amber-500 focus:ring-inset"
+                            >
+                              <span
+                                id="dropdownLabel2"
+                                class="dropdown-label flex-1 min-w-0 truncate whitespace-nowrap flex items-center gap-2"
+                              >
+                                <svg
+                                  class="dropdown-prefix-icon flex-shrink-0"
+                                  viewBox="0 0 24 24"
+                                  width="12px"
+                                  height="12px"
+                                  class="n8n-icon"
+                                  aria-hidden="true"
+                                  focusable="false"
+                                  role="img"
+                                  data-icon="case-upper"
+                                  style="color: var(--color-text-light)"
+                                >
+                                  <path
+                                    fill="none"
+                                    stroke="currentColor"
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                    stroke-width="2"
+                                    d="m3 15l4-8l4 8m-7-2h6m5-2h4.5a2 2 0 0 1 0 4H15V7h4a2 2 0 0 1 0 4"
+                                  ></path>
+                                </svg>
+                                String
+                              </span>
+                              <svg
+                                id="dropdownIcon2"
+                                class="w-5 h-4 flex-shrink-0 dropdown-icon transition-transform duration-300"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                              >
+                                <path
+                                  stroke-linecap="round"
+                                  stroke-linejoin="round"
+                                  stroke-width="2"
+                                  d="M19 9l-7 7-7-7"
+                                />
+                              </svg>
+                            </button>
+                            <!-- Triangle (comes BEFORE the dropdown menu in DOM) -->
+                            <div
+                              id="dropdownArrow4"
+                              class="dropdown-arrow hidden absolute top-full left-1/2 transform -translate-x-1/2 -mt-[1px] z-50"
+                            >
+                              <!-- Outer border -->
+                              <div
+                                class="w-0 h-0 border-l-8 border-r-8 border-b-8 border-l-transparent border-r-transparent border-b-[#000814]"
+                              ></div>
+                              <!-- Inner fill -->
+                              <div
+                                class="w-0 h-0 -mt-[7px] border-l-8 border-r-8 border-b-8 border-l-transparent border-r-transparent border-b-[#000814]"
+                              ></div>
+                            </div>
+
+                            <!-- Dropdown Menu -->
+                            <div
+                              id="dropdownMenu2"
+                              class="dropdown-menu hidden absolute right-0 mt-1.5 w-40 bg-[#000814] border border-gray-800 rounded shadow-lg z-40 text-white"
+                            >
+                              <ul class="text-sm items-center mt-2">
+                                <li
+                                  data-type="String"
+                                  class="type-option group/string-item relative px-2 py-2 hover:bg-gray-700 cursor-pointer w-full flex items-center font-semibold"
+                                >
+                                  <svg
+                                    class="dropdown-prefix-icon"
+                                    viewBox="0 0 24 24"
+                                    width="12px"
+                                    height="12px"
+                                    class="n8n-icon"
+                                    aria-hidden="true"
+                                    focusable="false"
+                                    role="img"
+                                    data-icon="case-upper"
+                                    style="color: var(--color-text-light)"
+                                  >
+                                    <path
+                                      fill="none"
+                                      stroke="currentColor"
+                                      stroke-linecap="round"
+                                      stroke-linejoin="round"
+                                      stroke-width="2"
+                                      d="m3 15l4-8l4 8m-7-2h6m5-2h4.5a2 2 0 0 1 0 4H15V7h4a2 2 0 0 1 0 4"
+                                    ></path>
+                                  </svg>
+                                  <span class="ml-3">String</span>
+                                  <svg
+                                    id="dropdownIcon2"
+                                    class="w-4 h-3 transition-transform duration-300 justify-end ml-auto -rotate-90"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    viewBox="0 0 24 24"
+                                  >
+                                    <path
+                                      stroke-linecap="round"
+                                      stroke-linejoin="round"
+                                      stroke-width="2"
+                                      d="M19 9l-7 7-7-7"
+                                    />
+                                  </svg>
+                                  <ul
+                                    class="second-dropdown w-40 hidden group-hover/string-item:block absolute bottom-0 left-full ml-0 bg-[#000814] border border-gray-700 rounded shadow-lg z-50 text-white"
+                                  >
+                                    <li
+                                      class="px-3 py-2 hover:bg-gray-600 cursor-pointer"
+                                    >
+                                      exists
+                                    </li>
+                                    <li
+                                      class="px-3 py-2 hover:bg-gray-600 cursor-pointer"
+                                    >
+                                      does not exist
+                                    </li>
+                                    <li
+                                      class="px-3 py-2 hover:bg-gray-600 cursor-pointer"
+                                    >
+                                      is Empty
+                                    </li>
+                                    <li
+                                      class="px-3 py-2 hover:bg-gray-600 cursor-pointer"
+                                    >
+                                      is not empty
+                                    </li>
+                                    <li
+                                      class="px-3 py-2 hover:bg-gray-600 cursor-pointer"
+                                    >
+                                      is equal to
+                                    </li>
+                                    <li
+                                      class="px-3 py-2 hover:bg-gray-600 cursor-pointer"
+                                    >
+                                      is not equal to
+                                    </li>
+                                    <li
+                                      class="px-3 py-2 hover:bg-gray-600 cursor-pointer"
+                                    >
+                                      contains
+                                    </li>
+                                    <li
+                                      class="px-3 py-2 hover:bg-gray-600 cursor-pointer"
+                                    >
+                                      does not contain
+                                    </li>
+                                    <li
+                                      class="px-3 py-2 hover:bg-gray-600 cursor-pointer"
+                                    >
+                                      start with
+                                    </li>
+                                    <li
+                                      class="px-3 py-2 hover:bg-gray-600 cursor-pointer"
+                                    >
+                                      does not start with
+                                    </li>
+                                    <li
+                                      class="px-3 py-2 hover:bg-gray-600 cursor-pointer"
+                                    >
+                                      end with
+                                    </li>
+                                    <li
+                                      class="px-3 py-2 hover:bg-gray-600 cursor-pointer"
+                                    >
+                                      does not end with
+                                    </li>
+                                  </ul>
+                                </li>
+                                <li
+                                  data-type="Number"
+                                  class="type-option group/number-item relative px-2 py-2 hover:bg-gray-700 cursor-pointer w-full flex items-center font-semibold"
+                                >
+                                  <svg
+                                    class="dropdown-prefix-icon"
+                                    viewBox="0 0 24 24"
+                                    width="12px"
+                                    height="12px"
+                                    aria-hidden="true"
+                                    focusable="false"
+                                    role="img"
+                                    data-icon="hash"
+                                    style="color: var(--color-primary)"
+                                  >
+                                    <path
+                                      fill="none"
+                                      stroke="currentColor"
+                                      stroke-linecap="round"
+                                      stroke-linejoin="round"
+                                      stroke-width="2"
+                                      d="M4 9h16M4 15h16M10 3L8 21m8-18l-2 18"
+                                    ></path>
+                                  </svg>
+                                  <span class="ml-3">Number</span>
+                                  <svg
+                                    id="dropdownIcon2"
+                                    class="w-4 h-3 transition-transform duration-300 justify-end ml-auto -rotate-90"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    viewBox="0 0 24 24"
+                                  >
+                                    <path
+                                      stroke-linecap="round"
+                                      stroke-linejoin="round"
+                                      stroke-width="2"
+                                      d="M19 9l-7 7-7-7"
+                                    />
+                                  </svg>
+                                  <ul
+                                    class="second-dropdown w-40 hidden group-hover/number-item:block absolute bottom-0 left-full ml-0 bg-[#000814] border border-gray-700 rounded shadow-lg z-50 text-white"
+                                  >
+                                    <li
+                                      class="px-3 py-2 hover:bg-gray-600 cursor-pointer"
+                                    >
+                                      exists
+                                    </li>
+                                    <li
+                                      class="px-3 py-2 hover:bg-gray-600 cursor-pointer"
+                                    >
+                                      does not exist
+                                    </li>
+                                    <li
+                                      class="px-3 py-2 hover:bg-gray-600 cursor-pointer"
+                                    >
+                                      is Empty
+                                    </li>
+                                    <li
+                                      class="px-3 py-2 hover:bg-gray-600 cursor-pointer"
+                                    >
+                                      is not empty
+                                    </li>
+                                    <li
+                                      class="px-3 py-2 hover:bg-gray-600 cursor-pointer"
+                                    >
+                                      is equal to
+                                    </li>
+                                    <li
+                                      class="px-3 py-2 hover:bg-gray-600 cursor-pointer"
+                                    >
+                                      is not equal to
+                                    </li>
+                                  </ul>
+                                </li>
+                                <li
+                                  data-type="Date&time"
+                                  class="type-option group/datetime-item relative px-2 py-2 hover:bg-gray-700 cursor-pointer w-full flex items-center font-semibold"
+                                >
+                                  <svg
+                                    class="dropdown-prefix-icon"
+                                    viewBox="0 0 24 24"
+                                    width="12px"
+                                    height="12px"
+                                    aria-hidden="true"
+                                    focusable="false"
+                                    role="img"
+                                    data-icon="calendar"
+                                  >
+                                    <g
+                                      fill="none"
+                                      stroke="currentColor"
+                                      stroke-linecap="round"
+                                      stroke-linejoin="round"
+                                      stroke-width="2"
+                                    >
+                                      <path d="M8 2v4m8-4v4"></path>
+                                      <rect
+                                        width="18"
+                                        height="18"
+                                        x="3"
+                                        y="4"
+                                        rx="2"
+                                      ></rect>
+                                      <path d="M3 10h18"></path>
+                                    </g>
+                                  </svg>
+                                  <span class="ml-3">Date & Time</span>
+                                  <svg
+                                    id="dropdownIcon2"
+                                    class="w-4 h-3 transition-transform duration-300 justify-end ml-auto -rotate-90"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    viewBox="0 0 24 24"
+                                  >
+                                    <path
+                                      stroke-linecap="round"
+                                      stroke-linejoin="round"
+                                      stroke-width="2"
+                                      d="M19 9l-7 7-7-7"
+                                    />
+                                  </svg>
+                                  <ul
+                                    class="second-dropdown w-40 hidden group-hover/datetime-item:block absolute bottom-0 left-full ml-0 bg-[#000814] border border-gray-700 rounded shadow-lg z-50 text-white"
+                                  >
+                                    <li
+                                      class="px-3 py-2 hover:bg-gray-600 cursor-pointer"
+                                    >
+                                      exists
+                                    </li>
+                                    <li
+                                      class="px-3 py-2 hover:bg-gray-600 cursor-pointer"
+                                    >
+                                      does not exist
+                                    </li>
+                                    <li
+                                      class="px-3 py-2 hover:bg-gray-600 cursor-pointer"
+                                    >
+                                      is Empty
+                                    </li>
+                                    <li
+                                      class="px-3 py-2 hover:bg-gray-600 cursor-pointer"
+                                    >
+                                      is not empty
+                                    </li>
+                                    <li
+                                      class="px-3 py-2 hover:bg-gray-600 cursor-pointer"
+                                    >
+                                      is equal to
+                                    </li>
+                                    <li
+                                      class="px-3 py-2 hover:bg-gray-600 cursor-pointer"
+                                    >
+                                      is not equal to
+                                    </li>
+                                    <li
+                                      class="px-3 py-2 hover:bg-gray-600 cursor-pointer"
+                                    >
+                                      is after
+                                    </li>
+                                    <li
+                                      class="px-3 py-2 hover:bg-gray-600 cursor-pointer"
+                                    >
+                                      is before
+                                    </li>
+                                  </ul>
+                                </li>
+                                <li
+                                  data-type="Boolean"
+                                  class="type-option group/boolean-item relative px-2 py-2 hover:bg-gray-700 cursor-pointer w-full flex items-center font-semibold"
+                                >
+                                  <svg
+                                    class="dropdown-prefix-icon"
+                                    viewBox="0 0 24 24"
+                                    width="12px"
+                                    height="12px"
+                                    aria-hidden="true"
+                                    focusable="false"
+                                    role="img"
+                                    data-icon="square-check"
+                                    style="color: var(--color-text-light)"
+                                  >
+                                    <g
+                                      fill="none"
+                                      stroke="currentColor"
+                                      stroke-linecap="round"
+                                      stroke-linejoin="round"
+                                      stroke-width="2"
+                                    >
+                                      <rect
+                                        width="18"
+                                        height="18"
+                                        x="3"
+                                        y="3"
+                                        rx="2"
+                                      ></rect>
+                                      <path d="m9 12l2 2l4-4"></path>
+                                    </g>
+                                  </svg>
+                                  <span class="ml-3">Boolean</span>
+                                  <svg
+                                    id="dropdownIcon2"
+                                    class="w-4 h-3 transition-transform duration-300 justify-end ml-auto -rotate-90"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    viewBox="0 0 24 24"
+                                  >
+                                    <path
+                                      stroke-linecap="round"
+                                      stroke-linejoin="round"
+                                      stroke-width="2"
+                                      d="M19 9l-7 7-7-7"
+                                    />
+                                  </svg>
+                                  <ul
+                                    class="second-dropdown w-40 hidden group-hover/boolean-item:block absolute bottom-0 left-full ml-0 bg-[#000814] border border-gray-700 rounded shadow-lg z-50 text-white"
+                                  >
+                                    <li
+                                      class="px-3 py-2 hover:bg-gray-600 cursor-pointer"
+                                    >
+                                      exists
+                                    </li>
+                                    <li
+                                      class="px-3 py-2 hover:bg-gray-600 cursor-pointer"
+                                    >
+                                      does not exist
+                                    </li>
+                                    <li
+                                      class="px-3 py-2 hover:bg-gray-600 cursor-pointer"
+                                    >
+                                      is Empty
+                                    </li>
+                                    <li
+                                      class="px-3 py-2 hover:bg-gray-600 cursor-pointer"
+                                    >
+                                      is not empty
+                                    </li>
+                                    <li
+                                      class="px-3 py-2 hover:bg-gray-600 cursor-pointer"
+                                    >
+                                      is true
+                                    </li>
+                                    <li
+                                      class="px-3 py-2 hover:bg-gray-600 cursor-pointer"
+                                    >
+                                      is false
+                                    </li>
+                                    <li
+                                      class="px-3 py-2 hover:bg-gray-600 cursor-pointer"
+                                    >
+                                      is equal to
+                                    </li>
+                                    <li
+                                      class="px-3 py-2 hover:bg-gray-600 cursor-pointer"
+                                    >
+                                      is not equal to
+                                    </li>
+                                  </ul>
+                                </li>
+                                <li
+                                  data-type="Array"
+                                  class="type-option group/array-item relative px-2 py-2 hover:bg-gray-700 cursor-pointer w-full flex items-center font-semibold"
+                                >
+                                  <svg
+                                    class="dropdown-prefix-icon"
+                                    viewBox="0 0 24 24"
+                                    width="12px"
+                                    height="12px"
+                                    aria-hidden="true"
+                                    focusable="false"
+                                    role="img"
+                                    data-icon="list"
+                                    style="color: var(--color-text-light)"
+                                  >
+                                    <path
+                                      fill="none"
+                                      stroke="currentColor"
+                                      stroke-linecap="round"
+                                      stroke-linejoin="round"
+                                      stroke-width="2"
+                                      d="M3 12h.01M3 18h.01M3 6h.01M8 12h13M8 18h13M8 6h13"
+                                    ></path>
+                                  </svg>
+                                  <span class="ml-3">Array</span>
+                                  <svg
+                                    id="dropdownIcon2"
+                                    class="w-4 h-3 transition-transform duration-300 justify-end ml-auto -rotate-90"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    viewBox="0 0 24 24"
+                                  >
+                                    <path
+                                      stroke-linecap="round"
+                                      stroke-linejoin="round"
+                                      stroke-width="2"
+                                      d="M19 9l-7 7-7-7"
+                                    />
+                                  </svg>
+                                  <ul
+                                    class="second-dropdown w-40 hidden group-hover/array-item:block absolute bottom-0 left-full ml-0 bg-[#000814] border border-gray-700 rounded shadow-lg z-50 text-white"
+                                  >
+                                    <li
+                                      class="px-3 py-2 hover:bg-gray-600 cursor-pointer"
+                                    >
+                                      exists
+                                    </li>
+                                    <li
+                                      class="px-3 py-2 hover:bg-gray-600 cursor-pointer"
+                                    >
+                                      does not exist
+                                    </li>
+                                    <li
+                                      class="px-3 py-2 hover:bg-gray-600 cursor-pointer"
+                                    >
+                                      is Empty
+                                    </li>
+                                    <li
+                                      class="px-3 py-2 hover:bg-gray-600 cursor-pointer"
+                                    >
+                                      is not empty
+                                    </li>
+                                    <li
+                                      class="px-3 py-2 hover:bg-gray-600 cursor-pointer"
+                                    >
+                                      length equal to
+                                    </li>
+                                    <li
+                                      class="px-3 py-2 hover:bg-gray-600 cursor-pointer"
+                                    >
+                                      length not equal to
+                                    </li>
+                                    <li
+                                      class="px-3 py-2 hover:bg-gray-600 cursor-pointer"
+                                    >
+                                      contains
+                                    </li>
+                                    <li
+                                      class="px-3 py-2 hover:bg-gray-600 cursor-pointer"
+                                    >
+                                      does not contain
+                                    </li>
+                                    <li
+                                      class="px-3 py-2 hover:bg-gray-600 cursor-pointer"
+                                    >
+                                      length greater than
+                                    </li>
+                                    <li
+                                      class="px-3 py-2 hover:bg-gray-600 cursor-pointer"
+                                    >
+                                      length less than
+                                    </li>
+                                  </ul>
+                                </li>
+                                <li
+                                  data-type="Object"
+                                  class="type-option group/object-item relative px-2 py-2 hover:bg-gray-700 cursor-pointer w-full flex items-center font-semibold"
+                                >
+                                  <svg
+                                    class="dropdown-prefix-icon"
+                                    viewBox="0 0 24 24"
+                                    width="12px"
+                                    height="12px"
+                                    aria-hidden="true"
+                                    focusable="false"
+                                    role="img"
+                                    data-icon="box"
+                                    style="color: var(--color-text-light)"
+                                  >
+                                    <g
+                                      fill="none"
+                                      stroke="currentColor"
+                                      stroke-linecap="round"
+                                      stroke-linejoin="round"
+                                      stroke-width="2"
+                                    >
+                                      <path
+                                        d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"
+                                      ></path>
+                                      <path
+                                        d="m3.3 7l8.7 5l8.7-5M12 22V12"
+                                      ></path>
+                                    </g>
+                                  </svg>
+                                  <span class="ml-3">Object</span>
+                                  <svg
+                                    id="dropdownIcon2"
+                                    class="w-4 h-3 transition-transform duration-300 justify-end ml-auto -rotate-90"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    viewBox="0 0 24 24"
+                                  >
+                                    <path
+                                      stroke-linecap="round"
+                                      stroke-linejoin="round"
+                                      stroke-width="2"
+                                      d="M19 9l-7 7-7-7"
+                                    />
+                                  </svg>
+                                  <ul
+                                    class="second-dropdown w-40 hidden group-hover/object-item:block absolute bottom-0 left-full ml-0 bg-[#000814] border border-gray-700 rounded shadow-lg z-50 text-white"
+                                  >
+                                    <li
+                                      class="px-3 py-2 hover:bg-gray-600 cursor-pointer"
+                                    >
+                                      exists
+                                    </li>
+                                    <li
+                                      class="px-3 py-2 hover:bg-gray-600 cursor-pointer"
+                                    >
+                                      does not exist
+                                    </li>
+                                    <li
+                                      class="px-3 py-2 hover:bg-gray-600 cursor-pointer"
+                                    >
+                                      is Empty
+                                    </li>
+                                    <li
+                                      class="px-3 py-2 hover:bg-gray-600 cursor-pointer"
+                                    >
+                                      is not empty
+                                    </li>
+                                  </ul>
+                                </li>
+                              </ul>
+                            </div>
+                          </div>
+                        </div>
+                        <!-- Value2 Field -->
+                        <div
+                          class="w-[500px] fixedSection5 group/value-field value-content relative"
+                        >
+                          <!-- Fixed/Expression Hover Code Bottom Right -->
+                          <div
+                            class="absolute -bottom-6 right-0 group-hover/value-field:block hidden"
+                          >
+                            <div
+                              class="flex items-center bg-gray-600 rounded relative"
+                            >
+                              <div class="tab-indicator w-1/2 left-0"></div>
+                              <button
+                                id="fixedBtn5"
+                                class="px-2 py-1 text-xs text-gray-400 tab-button z-10 fixed-btn"
+                                data-target="value"
+                              >
+                                Fixed
+                              </button>
+                              <button
+                                id="expressionBtn5"
+                                class="px-2 py-1 text-xs text-gray-400 tab-button expression-btn"
+                                data-target="value"
+                              >
+                                Expression
+                              </button>
+                            </div>
+                          </div>
+
+                          <!-- Value2 Input -->
+                          <div
+                            class="bg-[#000814] py-1.5 pl-1.5 rounded-b border border-gray-800 flex items-end"
+                          >
+                            <input
+                              type="text"
+                              placeholder="value2"
+                              class="bg-transparent text-white outline-none flex-1 pl-1"
+                            />
+
+                            <button
+                              class="bg-[#000814] text-gray-400 hover:text-orange-500 transition-colors"
+                            >
+                              <svg
+                                class="w-3 h-3 xs:w-4 xs:h-4 hidden group-hover/value-field:block"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                              >
+                                <path
+                                  stroke-linecap="round"
+                                  stroke-linejoin="round"
+                                  stroke-width="2"
+                                  d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
+                                ></path>
+                              </svg>
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- Include Other Input Fields -->
+                    <div class="ml-3 space-y-2 xs:space-y-3">
+                      <div>
+                        <label
+                          class="text-xs xs:text-sm font-medium text-white"
+                        >
+                          Rename Output
+                        </label>
+                      </div>
+                      <div class="flex justify-start">
+                        <div class="relative">
+                          <input
+                            type="checkbox"
+                            id="outputFormatToggle"
+                            class="sr-only"
+                          />
+                          <label
+                            for="outputFormatToggle"
+                            class="flex items-center cursor-pointer"
+                          >
+                            <div class="relative">
+                              <div
+                                class="block bg-[#000814] w-6 h-3 xs:w-10 xs:h-5 rounded-full transition-colors duration-200"
+                              ></div>
+                              <div
+                                class="dot absolute left-0.5 top-0.5 bg-white w-3 h-3 xs:w-4 xs:h-4 rounded-full transition-transform duration-300"
+                              ></div>
+                            </div>
+                          </label>
+                        </div>
+                      </div>
+                    </div>
+
+                    <button
+                      id="addOptionBtn4"
+                      class="ml-3 w-full bg-[#000814] text-white px-3 py-2 xs:px-4 xs:py-2 rounded-lg border border-gray-600 flex items-center justify-between transition-colors text-xs xs:text-sm"
+                    >
+                      <span>Add Routing Rule</span>
+                    </button>
+
+                    <div class="space-y-2 xs:space-y-3">
+                      <div>
+                        <label
+                          class="text-xs xs:text-sm font-medium text-white"
+                        >
+                          Convert types where required
+                        </label>
+                      </div>
+                      <div class="flex justify-start">
+                        <div class="relative">
+                          <input
+                            type="checkbox"
+                            id="outputFormatToggle2"
+                            class="sr-only"
+                          />
+                          <label
+                            for="outputFormatToggle2"
+                            class="flex items-center cursor-pointer"
+                          >
+                            <div class="relative">
+                              <div
+                                class="block bg-[#000814] w-6 h-3 xs:w-10 xs:h-5 rounded-full transition-colors duration-200"
+                              ></div>
+                              <div
+                                class="dot absolute left-0.5 top-0.5 bg-white w-3 h-3 xs:w-4 xs:h-4 rounded-full transition-transform duration-300"
+                              ></div>
+                            </div>
+                          </label>
+                        </div>
+                      </div>
+                    </div>
+                    <!-- options -->
+                    <div class="space-y-2">
+                      <h4 class="text-xs xs:text-sm font-medium text-white">
+                        Options
+                      </h4>
+                      <div class="border-b border-gray-600"></div>
+                    </div>
+
+                    <!-- Dynamic Options Container -->
+                    <div
+                      id="dynamicOptionsContainer"
+                      class="space-y-3 xs:space-y-4 ml-3 xs:ml-4"
+                    >
+                      <!-- System Message will be here by default -->
+                    </div>
+                    <!-- Add Option Dropdown -->
+                    <div class="ml-3 xs:ml-4 relative" id="addOptionContainer">
+                      <div
+                        id="addOptionDropdown"
+                        class="dropdown-arrow2 absolute bottom-full left-0 right-0 mb-2 bg-[#000814] border border-gray-600 rounded-lg shadow-lg z-50 hidden"
+                      >
+                        <div class="py-2">
+                          <button
+                            class="add-option-item w-full px-3 py-2 xs:px-4 xs:py-2 text-left text-white hover:bg-gray-700 transition-colors text-xs xs:text-sm"
+                            data-option="max-iterations"
+                          >
+                            Fallback Output
+                          </button>
+                          <button
+                            class="add-option-item w-full px-3 py-2 xs:px-4 xs:py-2 text-left text-white hover:bg-gray-700 transition-colors text-xs xs:text-sm"
+                            data-option="return-intermediate-steps"
+                          >
+                            Ignore Case
+                          </button>
+                          <button
+                            class="add-option-item w-full px-3 py-2 xs:px-4 xs:py-2 text-left text-white hover:bg-gray-700 transition-colors text-xs xs:text-sm"
+                            data-option="automatically-passthrough-binary-images"
+                          >
+                            Send data to all matching outputs
+                          </button>
+                        </div>
+                      </div>
+                      <button
+                        id="addOptionBtn"
+                        class="w-full bg-[#000814] text-white px-3 py-2 xs:px-4 xs:py-2 rounded-lg border border-gray-600 flex items-center justify-between transition-colors text-xs xs:text-sm"
+                      >
+                        <span>Add Option</span>
+                        <svg
+                          class="w-4 h-4 xs:w-5 xs:h-5 transition-transform duration-200 text-gray-600"
+                          id="selectArrow3"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M19 9l-7 7-7-7"
+                          ></path>
+                        </svg>
+                      </button>
+                      <!-- drag input field section -->
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <!-- Settings Content -->
+              <div id="settingsContent" class="h-full hidden">
+                <div
+                  id="settingsWhitePadding"
+                  class="bg-dark-panel m-3 xs:m-4 rounded-lg p-4 xs:p-6 flex-1 space-y-4 mt-6"
+                >
+                  <div>
+                    <div class="flex items-center justify-between">
+                      <label class="text-xs xs:text-sm font-medium text-white"
+                        >Retry On Fail</label
+                      >
+                      <button class="text-gray-100 hover:text-orange-500">
+                        <svg
+                          class="w-2 h-2 xs:w-3 xs:h-3"
+                          fill="currentColor"
+                          viewBox="0 0 20 20"
+                        >
+                          <path
+                            d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z"
+                          ></path>
+                        </svg>
+                      </button>
+                    </div>
+                    <div class="flex justify-start mt-2">
+                      <div class="relative">
+                        <input
+                          type="checkbox"
+                          id="retrySettingsToggle"
+                          class="sr-only"
+                        />
+                        <label
+                          for="retrySettingsToggle"
+                          class="flex items-center cursor-pointer"
+                        >
+                          <div class="relative">
+                            <div
+                              class="block bg-[#000814] w-6 h-3 xs:w-10 xs:h-5 rounded-full transition-colors duration-200"
+                            ></div>
+                            <div
+                              class="dot absolute left-0 top-0.5 bg-white w-3 h-3 xs:w-4 xs:h-4 rounded-full transition-transform duration-300"
+                            ></div>
+                          </div>
+                        </label>
+                      </div>
+                    </div>
+                  </div>
+                  <div
+                    id="retrySettingsContent"
+                    class="hidden bg-dark-panel rounded-lg relative"
+                  >
+                    <div class="mb-4">
+                      <label
+                        class="text-xs xs:text-sm font-medium text-white flex items-center gap-1"
+                      >
+                        Max. Tries
+                        <span class="help-icon">
+                          <svg
+                            class="w-4 h-4 text-gray-400 hover:text-orange-500 transition-colors"
+                            fill="currentColor"
+                            viewBox="0 0 20 20"
+                          >
+                            <path
+                              fill-rule="evenodd"
+                              d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-3a1 1 0 00-.867.5 1 1 0 11-1.731-1A3 3 0 0113 8a3.001 3.001 0 01-2 2.83V11a1 1 0 11-2 0v-1a1 1 0 011-1 1 1 0 100-2zm0 8a1 1 0 100-2 1 1 0 000 2z"
+                              clip-rule="evenodd"
+                            ></path>
+                          </svg>
+                        </span>
+                      </label>
+                      <input
+                        type="number"
+                        min="1"
+                        id="maxTriesInput"
+                        class="w-full bg-[#000814] mt-1 px-2 py-1 rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-orange-500 text-xs xs:text-sm"
+                        placeholder="Enter max tries..."
+                      />
+                    </div>
+                    <div>
+                      <label class="text-xs xs:text-sm font-medium text-white"
+                        >Wait Between Tries (ms)</label
+                      >
+                      <input
+                        type="number"
+                        min="0"
+                        id="waitBetweenTriesInput"
+                        class="w-full bg-[#000814] mt-1 px-2 py-1 rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-orange-500 text-xs xs:text-sm"
+                        placeholder="Enter wait time in ms..."
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- Bottom Control Buttons -->
+            <div
+              class="flex items-center justify-center gap-3 xs:gap-4 p-3 xs:p-4 border-t border-dark-border"
+            >
+              <button
+                class="w-8 h-8 xs:w-10 xs:h-10 bg-red-500 hover:bg-red-600 rounded-full flex items-center justify-center text-white transition-colors"
+              >
+                <svg
+                  class="w-4 h-4 xs:w-5 xs:h-5"
+                  fill="currentColor"
+                  viewBox="0 0 20 20"
+                >
+                  <path
+                    fill-rule="evenodd"
+                    d="M10 18a8 8 0 100-16 8 8 0 000 16zM8 7a1 1 0 012 0v4a1 1 0 11-2 0V7zM12 7a1 1 0 012 0v4a1 1 0 11-2 0V7z"
+                    clip-rule="evenodd"
+                  ></path>
+                </svg>
+              </button>
+              <button
+                class="w-8 h-8 xs:w-10 xs:h-10 bg-gray-600 hover:bg-gray-500 rounded flex items-center justify-center text-white transition-colors"
+              >
+                <svg
+                  class="w-4 h-4 xs:w-5 xs:h-5"
+                  fill="currentColor"
+                  viewBox="0 0 20 20"
+                >
+                  <path
+                    fill-rule="evenodd"
+                    d="M3 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z"
+                    clip-rule="evenodd"
+                  ></path>
+                </svg>
+              </button>
+              <button
+                class="w-8 h-8 xs:w-10 xs:h-10 bg-gray-600 hover:bg-gray-500 rounded flex items-center justify-center text-white transition-colors"
+              >
+                <svg
+                  class="w-4 h-4 xs:w-5 xs:h-5"
+                  fill="currentColor"
+                  viewBox="0 0 20 20"
+                >
+                  <path
+                    fill-rule="evenodd"
+                    d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z"
+                    clip-rule="evenodd"
+                  ></path>
+                </svg>
+              </button>
+            </div>
+          </div>
+          <!-- OUTPUT Panel -->
+          <div
+            id="outputPanel"
+            class="w-full h-full sm:w-80 md:w-96 bg-dark-panel border border-dark-border rounded-b-lg sm:rounded-r-lg sm:rounded-bl-none flex flex-col z-30 transition-all duration-300 panel output-panel order-3 sm:order-3"
+          >
+            <div class="p-3 xs:p-4 flex items-center justify-between">
+              <h3
+                class="text-xs xs:text-sm font-medium text-gray-300 uppercase tracking-wider"
+              >
+                OUTPUT
+              </h3>
+              <button class="text-gray-400 hover:text-white">
+                <svg
+                  class="w-3 h-3 xs:w-4 xs:h-4"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"
+                  ></path>
+                </svg>
+              </button>
+            </div>
+            <div class="flex-1 flex items-center justify-center p-4 xs:p-6">
+              <div class="text-center text-white">
+                <p class="text-gray-400 mb-2 text-sm xs:text-base">
+                  Execute this node to view data
+                </p>
+                <p class="text-gray-400 text-sm xs:text-base">
+                  or
+                  <span class="text-red-400 cursor-pointer hover:underline"
+                    >set mock data</span
+                  >
+                </p>
+              </div>
+            </div>
+            <div class="p-3 xs:p-4 border-t border-dark-border">
+              <div
+                class="flex items-center gap-2 text-xs xs:text-sm text-gray-400"
+              >
+                <svg
+                  class="w-3 h-3 xs:w-4 xs:h-4"
+                  fill="currentColor"
+                  viewBox="0 0 20 20"
+                >
+                  <path
+                    fill-rule="evenodd"
+                    d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z"
+                    clip-rule="evenodd"
+                  ></path>
+                </svg>
+                <span>I wish this node would...</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script src="js/switchScript.js"></script>
+  </body>
+</html>
